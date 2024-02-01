@@ -1,3 +1,10 @@
+import {
+  FunctionalValidator,
+  IRuleValidator,
+  IFunctionalRuleValidator,
+  RuleValidator,
+  Validator,
+} from '@/lib/validator';
 import { createClient } from '@/utils/supabase/server';
 import { SupabaseClient, createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -15,33 +22,31 @@ const RequestBody = z.object({
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
 });
 
-async function validateSlug(supabase: SupabaseClient, slug: string): Promise<boolean> {
-  const { data, error } = await supabase.rpc('get_account_by_slug', { slug });
-  console.log('🚀 ~ validateSlug ~ data, error:', data, error);
+const validateSlug: IFunctionalRuleValidator =
+  (supabase: SupabaseClient, slug: string) => async () => {
+    const { error } = await supabase.rpc('get_account_by_slug', { slug });
+    console.log('🚀 ~ validateSlug ~ error:', error);
 
-  if (error?.message === 'Not found') {
-    return true;
-  }
+    if (error?.message === 'Not found') {
+      return {};
+    }
 
-  return false;
-}
+    return { error: 'Slug already exists' };
+  };
 
-async function validateFirstTeam(supabase: SupabaseClient): Promise<boolean> {
+const validateFirstTeam: IFunctionalRuleValidator = (supabase: SupabaseClient) => async () => {
   const { data, error } = await supabase.rpc('get_accounts');
-  console.log('🚀 ~ validateFirstTeam ~ data, error:', data, error);
 
   if (error) {
-    return false;
+    return { error: `Error happened: ${error}` };
   }
-
-  console.log('🚀 ~ validateFirstTeam ~ data.length:', data.length);
 
   // User can have both personal and team account, that's why two
   if (data.length >= 2) {
-    return false;
+    return { error: 'User already has a team' };
   }
-  return true;
-}
+  return {};
+};
 
 async function handle(
   supabase: SupabaseClient,
@@ -49,12 +54,14 @@ async function handle(
 ): Promise<{ data?: any; error?: any }> {
   const { name, slug } = body;
 
-  if (!(await validateSlug(supabase, slug))) {
-    return { error: `Slug already exists: ${slug}` };
-  }
+  const functionalValidator = new FunctionalValidator([
+    validateSlug(supabase, slug),
+    validateFirstTeam(supabase),
+  ]);
 
-  if (!(await validateFirstTeam(supabase))) {
-    return { error: 'User already has a team' };
+  const error = await functionalValidator.validate();
+  if (error) {
+    return error;
   }
 
   const response = await supabase.rpc('create_account', {
@@ -62,7 +69,7 @@ async function handle(
     slug,
   });
 
-  console.log('Created an account!');
+  console.log(`Created an "${name} account (${slug})!`);
 
   return response;
 }
