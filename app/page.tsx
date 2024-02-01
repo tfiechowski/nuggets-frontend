@@ -1,10 +1,13 @@
-import DeployButton from "../components/DeployButton";
-import AuthButton from "../components/AuthButton";
-import { createClient } from "@/utils/supabase/server";
-import ConnectSupabaseSteps from "@/components/ConnectSupabaseSteps";
-import SignUpUserSteps from "@/components/SignUpUserSteps";
-import Header from "@/components/Header";
-import { cookies } from "next/headers";
+import DeployButton from '../components/DeployButton';
+import AuthButton from '../components/AuthButton';
+import { createClient } from '@/utils/supabase/server';
+import ConnectSupabaseSteps from '@/components/ConnectSupabaseSteps';
+import SignUpUserSteps from '@/components/SignUpUserSteps';
+import Header from '@/components/Header';
+import { cookies } from 'next/headers';
+import TestComponent from '@/components/TestComponent';
+
+// import { useAccounts} from "@usebasejump/next";
 
 export default async function Index() {
   const cookieStore = cookies();
@@ -31,7 +34,10 @@ export default async function Index() {
         </div>
       </nav>
 
-      <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-4xl px-3">
+      {/* {isLoading ? <div>loading...</div> : <>{JSON.stringify(data)}</>} */}
+      <TestComponent />
+
+      <div className="animate-in flex-1 flex flex-col gap-20 opacity-100 max-w-4xl px-3">
         <Header />
         <main className="flex-1 flex flex-col gap-6">
           <h2 className="font-bold text-4xl mb-4">Next steps</h2>
@@ -41,7 +47,7 @@ export default async function Index() {
 
       <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
         <p>
-          Powered by{" "}
+          Powered by{' '}
           <a
             href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
             target="_blank"
