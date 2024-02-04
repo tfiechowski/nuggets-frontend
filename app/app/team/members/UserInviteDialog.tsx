@@ -43,22 +43,15 @@ const userInviteFormSchema = z.object({
   role: z.enum(['member', 'owner']),
 });
 
-async function onInvite(email: string, role: 'member' | 'owner') {
-  const response = await fetch('/api/teams/invite', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, role }),
-  });
-
-  const body = await response.json();
-
-  return body;
-}
-
-export function UserInviteDialog({}: {}) {
+export function UserInviteDialogInner({
+  onInvite,
+  onSuccess,
+}: {
+  onInvite: (values: z.infer<typeof userInviteFormSchema>) => Promise<{ error?: any; data?: any }>;
+  onSuccess: () => void;
+}) {
   const [_error, setError] = useState<any>(null);
   const [open, setOpen] = useState<boolean>(false);
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof userInviteFormSchema>>({
     resolver: zodResolver(userInviteFormSchema),
@@ -72,16 +65,14 @@ export function UserInviteDialog({}: {}) {
     setError(null);
 
     try {
-      const response = await onInvite(values.email, values.role);
-      console.log('🚀 ~ onSubmit ~ response:', response);
+      const response = await onInvite(values);
 
       if (response.error) {
         setError(response.error);
         return;
       }
 
-      toast.success('Invitation sent!');
-      router.refresh();
+      onSuccess();
       form.reset();
       setOpen(false);
     } catch (e) {
@@ -168,4 +159,29 @@ export function UserInviteDialog({}: {}) {
       </DialogContent>
     </Dialog>
   );
+}
+
+export function UserInviteDialog({}: {}) {
+  const router = useRouter();
+
+  async function handleInvite(
+    values: z.infer<typeof userInviteFormSchema>
+  ): Promise<{ error?: any; data?: any }> {
+    const response = await fetch('/api/teams/invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(values),
+    });
+
+    const body = await response.json();
+
+    return body;
+  }
+
+  function handleSuccess() {
+    toast.success('Invitation sent!');
+    router.refresh();
+  }
+
+  return <UserInviteDialogInner onInvite={handleInvite} onSuccess={handleSuccess} />;
 }
