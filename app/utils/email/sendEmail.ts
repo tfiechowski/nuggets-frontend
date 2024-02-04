@@ -8,10 +8,10 @@ interface SendEmailParams {
 }
 
 export async function sendEmail(params: SendEmailParams): Promise<{ data?: any; error?: any }> {
-  if (NODE_ENV === 'development') {
-    console.log('Would send an email: ', params);
-    return {};
-  }
+  // if (NODE_ENV === 'development') {
+  //   console.log('Would send an email: ', params);
+  //   return {};
+  // }
 
   const resend = new Resend(ENV_RESEND_API_KEY);
 

@@ -24,5 +24,5 @@ export async function getUserTeam(): Promise<{
   }
   // Redirect here?
 
-  return { accountId: team.account_id, role: team.account_role, name: team.account_name };
+  return { accountId: team.account_id, role: team.account_role, name: team.name };
 }

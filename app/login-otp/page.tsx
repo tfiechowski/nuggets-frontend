@@ -19,7 +19,7 @@ export default function Login({
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `http://127.0.0.1:3000/auth/invitation/accept?xd=kurwa`
+        emailRedirectTo: `http://127.0.0.1:3000/auth/invitation/accept?invitationToken=${invitationToken}&message=Elo`
       }
     });
     console.log("🚀 ~ signInOtp ~ data, error:", data, error)
@@ -63,7 +63,6 @@ export default function Login({
           placeholder="you@example.com"
           required
         />
-        <button className="bg-green-700 rounded-md px-4 py-2 text-foreground mb-2">Sign In</button>
         <button
           formAction={signInOtp}
           className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2"
