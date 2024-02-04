@@ -34,7 +34,6 @@ export default async function Index() {
         </div>
       </nav>
 
-      {/* {isLoading ? <div>loading...</div> : <>{JSON.stringify(data)}</>} */}
       <TestComponent />
 
       <div className="animate-in flex-1 flex flex-col gap-20 opacity-100 max-w-4xl px-3">
