@@ -1,6 +1,6 @@
 import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
 
-export async function getUserTeam(): Promise<{ accountId: string }> {
+export async function getUserTeam(): Promise<{ accountId: string; role: 'member' | 'owner' }> {
   const supabase = getServerSupabaseClient();
 
   const { data, error } = await supabase.rpc('get_accounts');
@@ -17,5 +17,5 @@ export async function getUserTeam(): Promise<{ accountId: string }> {
   }
   // Redirect here?
 
-  return { accountId: team.account_id };
+  return { accountId: team.account_id, role: team.account_role };
 }
