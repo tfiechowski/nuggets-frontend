@@ -1,33 +1,36 @@
-import { createClient } from '@/utils/supabase/server';
-import { cookies } from 'next/headers';
+'use client';
+
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { RocketIcon } from '@radix-ui/react-icons';
+import { signInOtp } from '@/app/auth/accept-invitation/actions';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 export default function Login({
   searchParams,
 }: {
-  searchParams: { message: string; invitationToken: string; company: string; email: string };
+  searchParams: { invitationToken: string; company: string; email: string };
 }) {
   const { invitationToken, company, email } = searchParams;
+  const [state, setState] = useState<{ isLoading: boolean; error: any; success: boolean }>({
+    isLoading: false,
+    error: null,
+    success: false,
+  });
 
-  const signInOtp = async (formData: FormData) => {
-    'use server';
-
-    const email = formData.get('email') as string;
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
-
-    const { data, error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `http://127.0.0.1:3000/auth/callback/accept-invitation?invitationToken=${invitationToken}&message=Elo`,
-      },
-    });
-    console.log('🚀 ~ signInOtp ~ data, error:', data, error);
-
-    // return redirect('/app');
-  };
+  async function handleFormAction(formData: FormData) {
+    setState({ isLoading: true, error: null, success: false });
+    try {
+      await signInOtp(formData);
+      setState((_state) => ({ ..._state, success: true }));
+    } catch (error) {
+      setState((_state) => ({ ..._state, error }));
+    } finally {
+      setState((_state) => ({ ..._state, isLoading: false }));
+    }
+  }
 
   return (
     <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
@@ -64,27 +67,35 @@ export default function Login({
           </AlertDescription>
         </Alert>
 
-        <div className="py-8">
-          Please confirm your email below and use Magic Link to log in to the app:
-        </div>
+        {state.success ? (
+          <>
+            <h2 className="px-4 py-20 text-lg font-semibold tracking-tight">
+              Please check your inbox for the magic link! 🪄
+            </h2>
+          </>
+        ) : (
+          <>
+            <div className="py-6">
+              Please confirm your email below and use Magic Link to log in to the app:
+            </div>
 
-        <input
-          className="rounded-md px-4 py-2 bg-inherit border mb-6"
-          name="email"
-          placeholder="you@example.com"
-          defaultValue={email}
-          required
-        />
-        <button
-          formAction={signInOtp}
-          className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2"
-        >
-          Send magic link 🪄
-        </button>
-        {searchParams?.message && (
-          <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
-            {searchParams.message}
-          </p>
+            <input type="hidden" name="invitationToken" value={invitationToken} />
+
+            <input
+              className="rounded-md px-4 py-2 bg-inherit border mb-6"
+              name="email"
+              placeholder="you@example.com"
+              defaultValue={email}
+              required
+            />
+            <Button variant="outline" formAction={handleFormAction} disabled={state.isLoading}>
+              {state.isLoading ? (
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                'Send magic link 🪄'
+              )}
+            </Button>
+          </>
         )}
       </form>
     </div>
