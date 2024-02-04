@@ -1,13 +1,15 @@
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { RocketIcon } from '@radix-ui/react-icons';
 
 export default function Login({
   searchParams,
 }: {
-  searchParams: { message: string; invitationToken: string };
+  searchParams: { message: string; invitationToken: string; company: string; email: string };
 }) {
-  const { invitationToken } = searchParams;
+  const { invitationToken, company, email } = searchParams;
 
   const signInOtp = async (formData: FormData) => {
     'use server';
@@ -54,20 +56,30 @@ export default function Login({
         className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground"
         action={signInOtp}
       >
-        <label className="text-md" htmlFor="email">
-          Email
-        </label>
+        <Alert>
+          <RocketIcon className="h-4 w-4" />
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+            You've been invited to join {company ? company : 'your organisation'} in Nuggets!
+          </AlertDescription>
+        </Alert>
+
+        <div className="py-8">
+          Please confirm your email below and use Magic Link to log in to the app:
+        </div>
+
         <input
           className="rounded-md px-4 py-2 bg-inherit border mb-6"
           name="email"
           placeholder="you@example.com"
+          defaultValue={email}
           required
         />
         <button
           formAction={signInOtp}
           className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2"
         >
-          Send magic link
+          Send magic link 🪄
         </button>
         {searchParams?.message && (
           <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">

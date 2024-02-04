@@ -72,8 +72,8 @@ async function handle(
 
   sendEmail({
     to: email,
-    subject: `dawaj kurwa do ${userTeam.name}`,
-    html: `<a href="http://127.0.0.1:3000/login-otp?invitationToken=${invitationToken}&message=dawaj+do+${userTeam.name}}">dawaj kurwa</a>`,
+    subject: `Nuggets - You've been invited to join ${userTeam.name}`,
+    html: `<a href="http://127.0.0.1:3000/login-otp?invitationToken=${invitationToken}&company=${userTeam.name}&email=${email}">Join!</a>`,
   });
 
   if (error) {
