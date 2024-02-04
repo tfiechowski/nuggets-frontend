@@ -8,6 +8,8 @@ export async function getUserTeam(): Promise<{
 }> {
   const supabase = getServerSupabaseClient();
 
+  const user = await supabase.auth.getUser();
+
   const { data, error } = await supabase.rpc('get_accounts');
 
   if (error) {

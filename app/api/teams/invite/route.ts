@@ -5,6 +5,8 @@ import { getTeamMembers } from '@/app/utils/server/getTeamMembers';
 import { getUserTeam } from '@/app/utils/server/getUserTeam';
 import { FunctionalValidator, IFunctionalRuleValidator } from '@/lib/validator';
 import { SupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { ZodError, z } from 'zod';
 
@@ -17,7 +19,6 @@ const RequestBody = z.object({
   email: z.string(),
   role: z.enum(['member', 'owner']),
 });
-
 
 const validateNotTeamMemberAlready: IFunctionalRuleValidator = (email: string) => async () => {
   const teamMembers = await getTeamMembers();
@@ -54,62 +55,41 @@ async function handle(
   const userTeam = await getUserTeam();
   console.log('🚀 ~ userTeam:', userTeam);
 
-  const { data, error } = await supabase.auth.signInWithOtp({
-    email: 'test-1@breezeflow.eu',
-    options: {
-      // set this to false if you do not want the user to be automatically signed up
-      shouldCreateUser: true,
-      emailRedirectTo: `${DEFAULT_URL}/app`,
-    },
-  })
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL as any,
+    process.env.SUPABASE_SERVICE_ROLE_KEY as any
+  );
 
-  // now get the user
+  const { data, error } = await supabaseAdmin.auth.admin.createUser({ email, email_confirm: true });
 
+  // const res = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {redirectTo: `${DEFAULT_URL}/login?elo=mordo`})
+
+
+  // const res = await supabaseAdmin.auth.admin.generateLink({
+  //   type: 'magiclink',
+  //   email,
+  //   options: {
+  //     redirectTo: `/login?test=xd`,
+  //   }
+  // })
+
+  // console.log("🚀 inviteUserByEmail ~ res:", res);
 
   // create an membership entry in the database (account_users table - user_id/account_id/account_role)
-
-  const { data, error } = await supabase.rpc('create_invitation', {
-    account_id: userTeam.accountId,
-    account_role: role,
-    invitation_type: 'one_time',
-  });
+  // const res = await supabase.from('account_users').insert({
+  //   user_id: user.data.user?.id,
+  //   account_id: userTeam.accountId,
+  //   account_role: role,
+  // });
+  // console.log("🚀 ~ account_users ~ res:", res)
 
   if (error) {
     console.log('Cannot create invitation', error);
     return { error };
   }
 
-  const { token: invitationToken } = data;
-
-  console.log(`Created an invitation for ${email} to account (${userTeam.accountId})!`);
-
-  const activationLink = `${DEFAULT_URL}/login?message=You%27ve+been+invited+to+join+a+team%21+Please+create+an+account&invitationToken${invitationToken}`
-  const emailResponse = await sendEmail({
-    subject: `You've been invited to ${userTeam.name}`,
-    html: `
-<div>
-  <div>Hello, you've been invoted to ${userTeam.name}!</div>
-
-  <div>
-    Please go to 
-    <a href="${activationLink}">this link to activate your account</a>
-  <div>
-
-  <div>
-    If it doesn't work, copy and paste this link in your browser: ${activationLink}
-  </div>
-
-  <div>
-    Best,
-    Nuggets Team!
-  </div>
-</div>
-    `,
-    to: email,
-  });
-  console.log('🚀 ~ emailResponse:', emailResponse);
-
-  return emailResponse.error ? { error: emailResponse.error } : {};
+  return {};
+  // console.log(`Created an invitation for ${email} to account (${userTeam.accountId})!`);
 }
 
 export async function POST(request: Request) {

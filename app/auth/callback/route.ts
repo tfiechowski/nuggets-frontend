@@ -17,22 +17,21 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  const invitationToken = requestUrl.searchParams.get('invitationToken');
-  if (invitationToken) {
-    console.log('Accepting invitation token');
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+  // const invitationToken = requestUrl.searchParams.get('invitationToken');
+  // if (invitationToken) {
+  //   console.log('Accepting invitation token');
+  //   const cookieStore = cookies();
+  //   const supabase = createClient(cookieStore);
 
-    // User should be authenticated at this point
-    const user = await supabase.auth.getUser();
-    console.log('User:', user);
+  //   // User should be authenticated at this point
+  //   const user = await supabase.auth.getUser();
 
-    const { data, error } = await supabase.rpc('accept_invitation', {
-      lookup_invitation_token: invitationToken,
-    });
+  //   const { data, error } = await supabase.rpc('accept_invitation', {
+  //     lookup_invitation_token: invitationToken,
+  //   });
 
-    console.log('accept_invitation data, error:', data, error);
-  }
+  //   console.log('accept_invitation data, error:', data, error);
+  // }
 
   // URL to redirect to after sign in process completes
   return NextResponse.redirect(requestUrl.origin);
