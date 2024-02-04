@@ -2,8 +2,8 @@ import { DataTable } from '@/app/app/team/members/MembersTable';
 import { UserInviteDialog } from '@/app/app/team/members/UserInviteDialog';
 import { getTeamMembers } from '@/app/utils/server/getTeamMembers';
 import { getUserTeam } from '@/app/utils/server/getUserTeam';
-import { toast } from 'sonner';
 
+import { getTeamInvitations } from '@/app/utils/server/getTeamInvitations';
 import { ColumnDef } from '@tanstack/react-table';
 
 // This type is used to define the shape of our data.
@@ -38,6 +38,7 @@ async function getIsTeamOwner() {
 export default async function Manage() {
   const members = await getTeamMembers();
   const isTeamOwner = await getIsTeamOwner();
+  const invitations = await getTeamInvitations();
 
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
@@ -52,6 +53,11 @@ export default async function Manage() {
         )}
       </div>
       <DataTable columns={columns} data={members} />
+
+      <div className="py-8">
+        <h3 className="text-xl font-bold tracking-tight pb-8">Invitations</h3>
+        <div>You have {invitations} pending invitations</div>
+      </div>
     </div>
   );
 }

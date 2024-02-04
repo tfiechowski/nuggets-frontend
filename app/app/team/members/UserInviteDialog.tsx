@@ -1,17 +1,14 @@
 'use client';
 
-import { Button } from '@/registry/new-york/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -19,21 +16,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Button } from '@/registry/new-york/ui/button';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 
-import { z } from 'zod';
+import { toast } from 'sonner';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { z } from 'zod';
 
 const userInviteFormSchema = z.object({
   email: z
@@ -56,8 +56,10 @@ async function onInvite(email: string, role: 'member' | 'owner') {
 }
 
 export function UserInviteDialog({}: {}) {
-  const [_error, setError] = useState(null);
-  console.log('🚀 ~ error:', _error);
+  const [_error, setError] = useState<any>(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof userInviteFormSchema>>({
     resolver: zodResolver(userInviteFormSchema),
     defaultValues: {
@@ -66,26 +68,31 @@ export function UserInviteDialog({}: {}) {
     },
   });
 
-  console.log('Form:', form);
-
   async function onSubmit(values: z.infer<typeof userInviteFormSchema>) {
+    setError(null);
+
     try {
       const response = await onInvite(values.email, values.role);
       console.log('🚀 ~ onSubmit ~ response:', response);
 
       if (response.error) {
         setError(response.error);
+        return;
       }
+
+      toast.success('Invitation sent!');
+      router.refresh();
+      form.reset();
+      setOpen(false);
     } catch (e) {
       console.log('Error submitting');
       console.error(e);
+      setError(e);
     }
-
-    console.log('Values:', values);
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Invite</Button>
       </DialogTrigger>
@@ -157,7 +164,7 @@ export function UserInviteDialog({}: {}) {
             </DialogFooter>
           </form>
         </Form>
-        {_error && <DialogFooter>Error: {JSON.stringify(_error)}</DialogFooter>}
+        {_error && <DialogFooter>Error: {_error}</DialogFooter>}
       </DialogContent>
     </Dialog>
   );
