@@ -27,10 +27,10 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 function Header() {
   return (
-    <div className="flex flex-row py-2 items-center">
+    <div className="flex flex-row pb-4 pl-4 items-center">
       <Avatar className="w-8 h-8">
         <AvatarImage asChild src={NuggetsLogo.src}>
-          <Image src={NuggetsLogo.src} width={32} height={32} alt="XD" />
+          <Image src={NuggetsLogo.src} width={32} height={32} alt="Nuggets logo" />
         </AvatarImage>
         <AvatarFallback>N</AvatarFallback>
       </Avatar>
