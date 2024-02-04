@@ -71,9 +71,13 @@ export default async function Manage() {
   console.log('🚀 ~ Manage ~ members:', members);
 
   return (
-    <div>
+    <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
+      <div className="flex items-center justify-between space-y-2">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Your team members</h2>
+        </div>
+      </div>
       <DataTable columns={columns} data={members} />
-      {/* <div>{JSON.stringify(members)}</div> */}
     </div>
   );
 }
