@@ -47,57 +47,34 @@ async function handle(
 
   // rework functional validator to throw exceptions?
   const validationError = await functionalValidator.validate();
-  console.log('🚀 ~ validationError:', validationError);
+
   if (validationError.error) {
     return validationError;
   }
 
   const userTeam = await getUserTeam();
-  console.log('🚀 ~ userTeam:', userTeam);
 
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL as any,
     process.env.SUPABASE_SERVICE_ROLE_KEY as any
   );
 
-  const createUserRes = await supabaseAdmin.auth.admin.createUser({ email, email_confirm: true });
+  await supabaseAdmin.auth.admin.createUser({ email, email_confirm: true });
 
-  const {data, error} = await supabase.rpc('create_invitation', {
+  const { data, error } = await supabase.rpc('create_invitation', {
     account_id: userTeam.accountId,
     account_role: role,
     invitation_type: 'one_time',
   });
-  console.log("🚀 create_invitation ~ data, error:", data, error)
-
+  console.log('🚀 create_invitation ~ data, error:', data, error);
 
   const { token: invitationToken } = data;
-  // const res = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {redirectTo: `${DEFAULT_URL}/login?elo=mordo`})
-
-  // const res = await supabaseAdmin.auth.admin.generateLink({
-  //   type: 'magiclink',
-  //   email,
-  //   options: {
-  //     redirectTo: `http://127.0.0.1:3000/auth/invitation/accept?kurwa=elo`,
-  //   }
-  // })
 
   sendEmail({
     to: email,
     subject: `dawaj kurwa do ${userTeam.name}`,
-    html: `<a href="http://127.0.0.1:3000/login-otp?invitationToken=${invitationToken}&message=dawaj+do+${userTeam.name}}">dawaj kurwa</a>`
+    html: `<a href="http://127.0.0.1:3000/login-otp?invitationToken=${invitationToken}&message=dawaj+do+${userTeam.name}}">dawaj kurwa</a>`,
   });
-
-  // console.log("🚀 generateLink ~ res:", res)
-
-  // console.log("🚀 inviteUserByEmail ~ res:", res);
-
-  // create an membership entry in the database (account_users table - user_id/account_id/account_role)
-  // const res = await supabase.from('account_users').insert({
-  //   user_id: user.data.user?.id,
-  //   account_id: userTeam.accountId,
-  //   account_role: role,
-  // });
-  // console.log("🚀 ~ account_users ~ res:", res)
 
   if (error) {
     console.log('Cannot create invitation', error);
