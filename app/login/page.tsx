@@ -3,7 +3,13 @@ import { headers, cookies } from 'next/headers';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
-export default function Login({ searchParams }: { searchParams: { message: string } }) {
+export default function Login({
+  searchParams,
+}: {
+  searchParams: { message: string; invitationToken: string };
+}) {
+  const { invitationToken } = searchParams;
+
   const signIn = async (formData: FormData) => {
     'use server';
 
@@ -21,7 +27,7 @@ export default function Login({ searchParams }: { searchParams: { message: strin
       return redirect('/login?message=Could not authenticate user');
     }
 
-    return redirect('/');
+    return redirect('/app');
   };
 
   const signUp = async (formData: FormData) => {
@@ -33,13 +39,17 @@ export default function Login({ searchParams }: { searchParams: { message: strin
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
-    const { error } = await supabase.auth.signUp({
+    const emailRedirectTo =
+      `${origin}/auth/callback` + invitationToken ? `invitationToken=${invitationToken}` : '';
+
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${origin}/auth/callback`,
+        emailRedirectTo,
       },
     });
+    console.log('🚀 ~ signUp ~ data, error:', data, error);
 
     if (error) {
       return redirect('/login?message=Could not authenticate user');

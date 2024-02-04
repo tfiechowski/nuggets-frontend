@@ -1,4 +1,5 @@
 import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
+import { redirect } from 'next/navigation';
 
 export async function getUserTeam(): Promise<{
   accountId: string;
@@ -17,7 +18,7 @@ export async function getUserTeam(): Promise<{
 
   if (!team) {
     // should be handled by global catch?
-    throw new Error('User has no team');
+    return redirect('/team/create');
   }
   // Redirect here?
 
