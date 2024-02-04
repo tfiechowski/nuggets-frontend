@@ -1,4 +1,9 @@
-import { DEFAULT_FROM_EMAIL, ENV_RESEND_API_KEY, NODE_ENV } from '@/app/utils/config';
+import {
+  DEFAULT_FROM_EMAIL,
+  ENV_RESEND_API_KEY,
+  ENV_RESEND_FORCE_EMAIL,
+  NODE_ENV,
+} from '@/app/utils/config';
 import { Resend } from 'resend';
 
 interface SendEmailParams {
@@ -8,10 +13,10 @@ interface SendEmailParams {
 }
 
 export async function sendEmail(params: SendEmailParams): Promise<{ data?: any; error?: any }> {
-  // if (NODE_ENV === 'development') {
-  //   console.log('Would send an email: ', params);
-  //   return {};
-  // }
+  if ((NODE_ENV === 'development' || NODE_ENV === 'test') && !ENV_RESEND_FORCE_EMAIL) {
+    console.log('Would send an email: ', params);
+    return {};
+  }
 
   const resend = new Resend(ENV_RESEND_API_KEY);
 
