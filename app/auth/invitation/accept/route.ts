@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { type CookieOptions, createServerClient } from '@supabase/ssr'
+import { DEFAULT_URL } from '@/app/utils/config'
 
 export async function GET(request: Request) {
   console.log("🚀 ~ /auth/invitation/accept ~ GET:")
@@ -35,7 +36,7 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
 
-      const url = `${origin}${next}`;
+      const url = `${DEFAULT_URL}${next}`;
       console.log('url:', url);
       return NextResponse.redirect(url)
     }
