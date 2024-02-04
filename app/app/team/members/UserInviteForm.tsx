@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -29,10 +22,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
-import { toast } from 'sonner';
-
+import { TeamInvitationService } from '@/app/utils/client/TeamInvitationService';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 
 const userInviteFormSchema = z.object({
@@ -47,7 +38,7 @@ export function UserInviteForm({
   onInvite,
   onSuccess,
 }: {
-  onInvite: (values: z.infer<typeof userInviteFormSchema>) => Promise<{ error?: any; data?: any }>;
+  onInvite: typeof TeamInvitationService.inviteUserToTeam;
   onSuccess: () => void;
 }) {
   const [_error, setError] = useState<any>(null);
@@ -61,9 +52,10 @@ export function UserInviteForm({
 
   async function onSubmit(values: z.infer<typeof userInviteFormSchema>) {
     setError(null);
+    const { email, role } = values;
 
     try {
-      const response = await onInvite(values);
+      const response = await onInvite(email, role);
 
       if (response.error) {
         setError(response.error);
