@@ -1,7 +1,9 @@
 import { DataTable } from '@/app/app/team/members/MembersTable';
+import { UserInviteDialog } from '@/app/app/team/members/UserInviteDialog';
 import { getTeamMembers } from '@/app/utils/server/getTeamMembers';
 import { getUserTeam } from '@/app/utils/server/getUserTeam';
-import { Button } from '@/registry/new-york/ui/button';
+import { toast } from 'sonner';
+
 import { ColumnDef } from '@tanstack/react-table';
 
 // This type is used to define the shape of our data.
@@ -45,7 +47,7 @@ export default async function Manage() {
         </div>
         {isTeamOwner && (
           <div className="flex  items-center space-x-2">
-            <Button variant="outline">Invite</Button>
+            <UserInviteDialog />
           </div>
         )}
       </div>
