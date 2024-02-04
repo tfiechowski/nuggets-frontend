@@ -1,6 +1,3 @@
-'use client';
-
-import { UserProvider } from '@/app/context/UserContext';
 import { Sidebar } from '@/components/ui/Sidebar';
 import { Toaster } from '@/components/ui/sonner';
 import { SignedIn } from '@usebasejump/next';
@@ -8,19 +5,15 @@ import { SignedIn } from '@usebasejump/next';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <SignedIn>
-        <UserProvider>
-          <div className="bg-background min-h-screen">
-            <Toaster />
-            <div className="grid lg:grid-cols-5 min-h-screen">
-              <Sidebar />
-              <div className="col-span-3 lg:col-span-4 lg:border-l">
-                <div className="h-full px-4 py-6 lg:px-8">{children}</div>
-              </div>
-            </div>
+      <div className="bg-background min-h-screen">
+        <Toaster />
+        <div className="grid lg:grid-cols-5 min-h-screen">
+          <Sidebar />
+          <div className="col-span-3 lg:col-span-4 lg:border-l">
+            <div className="h-full px-4 py-6 lg:px-8">{children}</div>
           </div>
-        </UserProvider>
-      </SignedIn>
+        </div>
+      </div>
     </>
   );
 }

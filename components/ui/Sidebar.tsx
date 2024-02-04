@@ -1,9 +1,10 @@
+import NuggetsLogo from '@/app/public/images/nuggets-logo.png';
+import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { Button } from '@/registry/new-york/ui/button';
-import NuggetsLogo from '@/app/public/images/nuggets-logo.png';
-import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export type Playlist = (typeof playlists)[number];
 
@@ -39,9 +40,12 @@ function Header() {
   );
 }
 
-export function Sidebar({ className }: SidebarProps) {
+export async function Sidebar({ className }: SidebarProps) {
+  const supabase = getServerSupabaseClient();
+  const user = await supabase.auth.getUser();
+
   return (
-    <div className={cn('pb-12 flex', className)}>
+    <div className={cn('flex', className)}>
       <div className="grow flex flex-col space-y-4 py-4">
         <div className="px-3 py-2">
           <Header />
@@ -133,8 +137,10 @@ export function Sidebar({ className }: SidebarProps) {
           </div>
         </div>
         <div className="grow px-3 py-2" />
-        <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">Account</h2>
+        <div className="px-3">
+          <h2 className="px-4 text-lg font-semibold tracking-tight">Account</h2>
+          <h5 className="px-4 pb-4 text-xs font-light tracking-tight">{user.data.user?.email}</h5>
+
           <div className="space-y-1">
             <Link href="/auth/logout">
               <Button variant="ghost" className="w-full justify-start">

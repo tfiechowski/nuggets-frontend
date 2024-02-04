@@ -22,7 +22,6 @@ function getDefaultValue() {
 export const UserContext = createContext<UserContext>(null as any);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  console.log('HERE');
   const { data, error, isLoading } = useAccounts();
   // Caching is possible to be added here, on a first login actually or creation of a team
   // Then cleaned up on logout
