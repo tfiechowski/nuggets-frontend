@@ -21,7 +21,7 @@ export default function Login({
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `http://127.0.0.1:3000/auth/invitation/accept?invitationToken=${invitationToken}&message=Elo`,
+        emailRedirectTo: `http://127.0.0.1:3000/auth/callback/accept-invitation?invitationToken=${invitationToken}&message=Elo`,
       },
     });
     console.log('🚀 ~ signInOtp ~ data, error:', data, error);
