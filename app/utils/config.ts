@@ -1,6 +1,6 @@
 export const DEFAULT_FROM_EMAIL = 'tomasz@breezeflow.eu';
 
-function getEnvKey(key: string): string {
+export function getEnvKey(key: string): string {
   const value = process.env[key];
   if (!value) {
     throw new Error(`Missing environment variable ${key}`);
@@ -8,7 +8,7 @@ function getEnvKey(key: string): string {
   return value;
 }
 
-export const ENV_RESEND_API_KEY = getEnvKey('RESEND_API_KEY');
+export const ENV_RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 export const NODE_ENV = process.env.NODE_ENV || 'development';
 

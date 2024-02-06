@@ -1,8 +1,8 @@
 import {
   DEFAULT_FROM_EMAIL,
-  ENV_RESEND_API_KEY,
   ENV_RESEND_FORCE_EMAIL,
   NODE_ENV,
+  getEnvKey,
 } from '@/app/utils/config';
 import { Resend } from 'resend';
 
@@ -18,7 +18,7 @@ export async function sendEmail(params: SendEmailParams): Promise<{ data?: any; 
     return {};
   }
 
-  const resend = new Resend(ENV_RESEND_API_KEY);
+  const resend = new Resend(getEnvKey('RESEND_API_KEY'));
 
   return resend.emails.send({ ...params, from: DEFAULT_FROM_EMAIL });
 }
