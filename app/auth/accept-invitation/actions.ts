@@ -1,5 +1,6 @@
 'use server';
 
+import { DEFAULT_URL } from '@/app/utils/config';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 
@@ -12,7 +13,7 @@ export const signInOtp = async (formData: FormData) => {
   const { data, error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `http://127.0.0.1:3000/auth/callback/accept-invitation?invitationToken=${invitationToken}`,
+      emailRedirectTo: `${DEFAULT_URL}/auth/callback/accept-invitation?invitationToken=${invitationToken}`,
     },
   });
   console.log('🚀 ~ signInOtp ~ data, error:', data, error);

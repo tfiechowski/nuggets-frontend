@@ -1,3 +1,4 @@
+import { DEFAULT_URL } from '@/app/utils/config';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
@@ -14,7 +15,7 @@ export default function Login({ searchParams }: { searchParams: { message: strin
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `http://127.0.0.1:3000/auth/callback`,
+        emailRedirectTo: `${DEFAULT_URL}/auth/callback`,
       },
     });
 

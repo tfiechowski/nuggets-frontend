@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { headers, cookies } from 'next/headers';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
+import { DEFAULT_URL } from '@/app/utils/config';
 
 export default function Login({
   searchParams,
@@ -20,7 +21,7 @@ export default function Login({
     const supabase = createClient(cookieStore);
 
     const emailRedirectTo =
-      `${origin}/auth/callback` + invitationToken ? `invitationToken=${invitationToken}` : '';
+      `${DEFAULT_URL}/auth/callback` + invitationToken ? `invitationToken=${invitationToken}` : '';
 
     const { data, error } = await supabase.auth.signUp({
       email,
