@@ -3,22 +3,22 @@
 /* Uncomment if you need to reset the Tailwind styles */
 /* @import 'normalize.css'; */
 
-.tiptap > * + * {
+/* > * + * {
   margin-top: 0.75em;
-}
-.tiptap ul,
-.tiptap ol {
+} */
+ul,
+ol {
   padding: 0 1rem;
 }
-.tiptap h1,
-.tiptap h2,
-.tiptap h3,
-.tiptap h4,
-.tiptap h5,
-.tiptap h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   line-height: 1.1;
 }
-.tiptap h1 {
+h1 {
   display: block;
   font-size: 2em;
   margin-top: 0.67em;
@@ -27,7 +27,7 @@
   margin-right: 0;
   font-weight: bold;
 }
-.tiptap h2 {
+h2 {
   display: block;
   font-size: 1.5em;
   margin-top: 0.83em;
@@ -36,7 +36,7 @@
   margin-right: 0;
   font-weight: bold;
 }
-.tiptap h3 {
+h3 {
   display: block;
   font-size: 1.17em;
   margin-top: 1em;
@@ -45,7 +45,7 @@
   margin-right: 0;
   font-weight: bold;
 }
-.tiptap h4 {
+h4 {
   display: block;
   margin-top: 1.33em;
   margin-bottom: 1.33em;
@@ -53,7 +53,7 @@
   margin-right: 0;
   font-weight: bold;
 }
-.tiptap h5 {
+h5 {
   display: block;
   font-size: 0.83em;
   margin-top: 1.67em;
@@ -62,7 +62,7 @@
   margin-right: 0;
   font-weight: bold;
 }
-.tiptap h6 {
+h6 {
   display: block;
   font-size: 0.67em;
   margin-top: 2.33em;
@@ -71,31 +71,31 @@
   margin-right: 0;
   font-weight: bold;
 }
-.tiptap code {
+code {
   background-color: rgba(97, 97, 97, 0.1);
   color: #616161;
 }
-.tiptap pre {
+pre {
   background: #0d0d0d;
   color: #fff;
   font-family: 'JetBrainsMono', monospace;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
 }
-.tiptap pre code {
+pre code {
   color: inherit;
   padding: 0;
   background: none;
   font-size: 0.8rem;
 }
-.tiptap img {
+img {
   max-width: 100%;
   height: auto;
 }
-.tiptap hr {
+hr {
   margin: 1rem 0;
 }
-.tiptap blockquote {
+blockquote {
   padding-left: 1rem;
   border-left: 2px solid rgba(13, 13, 13, 0.1);
 }

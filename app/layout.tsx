@@ -1,5 +1,4 @@
 import { GeistSans } from 'geist/font/sans';
-import { Inter as FontSans } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/app/providers';
 

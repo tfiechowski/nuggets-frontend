@@ -1,51 +1,63 @@
-'use client';
+import Editor from '@/app/app/core/competitors/Editor';
+import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
+import { getUserTeam } from '@/app/utils/server/getUserTeam';
+import { Button } from '@/registry/new-york/ui/button';
+import '@blocknote/react/style.css';
+import { revalidatePath } from 'next/cache';
+import './blocknote-styles.css';
 
-import './styles-compiled.css';
+interface CompetitorNote {
+  id: string;
+  competitor_name: string;
+  content: string;
+}
 
-// src/Tiptap.jsx
-import Highlight from '@tiptap/extension-highlight';
-import Typography from '@tiptap/extension-typography';
-import { EditorContent, useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import React from 'react';
+const handleUpdateNote = async (id: string, content: string) => {
+  'use server';
+  const supabase = getServerSupabaseClient();
 
-// define your extension array
-const extensions = [StarterKit, Typography, Highlight];
-
-const content = '<p>Hello World!</p>';
-
-const Editor = () => {
-  const editor = useEditor({
-    extensions: [StarterKit, Highlight, Typography],
-    content: `
-    <p>
-      Markdown shortcuts make it easy to format the text while typing.
-    </p>
-    <p>
-      To test that, start a new line and type <code>#</code> followed by a space to get a heading. Try <code>#</code>, <code>##</code>, <code>###</code>, <code>####</code>, <code>#####</code>, <code>######</code> for different levels.
-    </p>
-    <p>
-      Those conventions are called input rules in tiptap. Some of them are enabled by default. Try <code>></code> for blockquotes, <code>*</code>, <code>-</code> or <code>+</code> for bullet lists, or <code>\`foobar\`</code> to highlight code, <code>~~tildes~~</code> to strike text, or <code>==equal signs==</code> to highlight text.
-    </p>
-    <p>
-      You can overwrite existing input rules or add your own to nodes, marks and extensions.
-    </p>
-    <p>
-      For example, we added the <code>Typography</code> extension here. Try typing <code>(c)</code> to see how it’s converted to a proper © character. You can also try <code>-></code>, <code>>></code>, <code>1/2</code>, <code>!=</code>, or <code>--</code>.
-    </p>
-    `,
-  });
-
-  return <EditorContent editor={editor} />;
+  await supabase.from('competitor_notes').update({ content }).eq('id', id);
 };
 
-export default function Competitors() {
+const handleCreateNote = async (): Promise<CompetitorNote> => {
+  'use server';
+  const supabase = getServerSupabaseClient();
+  const team = await getUserTeam();
+
+  const { data, error } = await supabase
+    .from('competitor_notes')
+    .insert({ content: '# Sample note', competitor_name: 'Test Name', account_id: team.accountId })
+    .returns<CompetitorNote>();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath('/app/core/competitors');
+
+  return data;
+};
+
+export default async function App() {
+  const competitiveNotes = getServerSupabaseClient();
+  const { data } = await competitiveNotes.from('competitor_notes').select('*').order('created_at');
+
   return (
     <div>
-      Competitors!
-      <div>
-        <Editor />
-      </div>
+      <form action={handleCreateNote}>
+        <Button>Add new</Button>
+      </form>
+      {data?.map((competitorNote) => (
+        <div>
+          <h2>{competitorNote.competitor_name}</h2>
+
+          <Editor
+            initialContent={competitorNote.content}
+            noteId={competitorNote.id}
+            onUpdate={handleUpdateNote}
+          />
+        </div>
+      ))}
     </div>
   );
 }
