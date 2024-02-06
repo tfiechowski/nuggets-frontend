@@ -47,7 +47,7 @@ export default function CreateTeam({ searchParams }: { searchParams: { message: 
       if (data.error) {
         setError(data.error);
       } else {
-        router.push('/team');
+        router.push('/app');
       }
 
       console.log('Success!', data);
