@@ -21,8 +21,6 @@ export async function getTeamInvitations(): Promise<number> {
     return data.length;
   }
 
-  console.error(
-    `Error listing invitations for account: ${userTeamAccount.accountId} by ${user.data.user?.email}. Response data was null, not an array as expected.`
-  );
+  // There are no invitations
   return 0;
 }
