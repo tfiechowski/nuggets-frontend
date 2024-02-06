@@ -14,18 +14,6 @@ const RequestBody = z.object({
   content: z.string(),
 });
 
-const validateSlug: IFunctionalRuleValidator =
-  (supabase: SupabaseClient, slug: string) => async () => {
-    const { error } = await supabase.rpc('get_account_by_slug', { slug });
-    console.log('🚀 ~ validateSlug ~ error:', error);
-
-    if (error?.message === 'Not found') {
-      return {};
-    }
-
-    return { error: 'Slug already exists' };
-  };
-
 const validateTeam: IFunctionalRuleValidator =
   (supabase: SupabaseClient, accountId: string) => async () => {
     const { data, error } = await supabase.rpc('get_accounts');
