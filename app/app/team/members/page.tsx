@@ -14,7 +14,7 @@ export type User = {
   role: string;
 };
 
-export const columns: ColumnDef<User>[] = [
+const columns: ColumnDef<User>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
