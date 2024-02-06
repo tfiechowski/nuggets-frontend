@@ -1,4 +1,4 @@
-r'use client';
+'use client';
 
 import { DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
