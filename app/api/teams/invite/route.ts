@@ -78,7 +78,7 @@ async function handle(
   const emailResponse = await sendEmail({
     to: email,
     subject: `Nuggets - You've been invited to join ${userTeam.name}`,
-    html: `<a href="http://127.0.0.1:3000/auth/accept-invitation?invitationToken=${invitationToken}&company=${userTeam.name}&email=${email}">Join!</a>`,
+    html: `<a href="${DEFAULT_URL}/auth/accept-invitation?invitationToken=${invitationToken}&company=${userTeam.name}&email=${email}">Join!</a>`,
   });
 
   if (emailResponse.error) {
