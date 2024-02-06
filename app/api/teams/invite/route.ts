@@ -70,19 +70,24 @@ async function handle(
 
   const { token: invitationToken } = data;
 
-  sendEmail({
-    to: email,
-    subject: `Nuggets - You've been invited to join ${userTeam.name}`,
-    html: `<a href="http://127.0.0.1:3000/auth/accept-invitation?invitationToken=${invitationToken}&company=${userTeam.name}&email=${email}">Join!</a>`,
-  });
-
   if (error) {
     console.log('Cannot create invitation', error);
     return { error };
   }
 
+  const emailResponse = await sendEmail({
+    to: email,
+    subject: `Nuggets - You've been invited to join ${userTeam.name}`,
+    html: `<a href="http://127.0.0.1:3000/auth/accept-invitation?invitationToken=${invitationToken}&company=${userTeam.name}&email=${email}">Join!</a>`,
+  });
+
+  if (emailResponse.error) {
+    console.error('Cannot send an email', emailResponse.error);
+    return { error: emailResponse.error };
+  }
+
+  console.log(`Created an invitation for ${email} to account (${userTeam.accountId})!`);
   return {};
-  // console.log(`Created an invitation for ${email} to account (${userTeam.accountId})!`);
 }
 
 export async function POST(request: Request) {
