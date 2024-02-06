@@ -10,10 +10,13 @@ export const signInOtp = async (formData: FormData) => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
+  const url = `${DEFAULT_URL}/auth/callback/accept-invitation?invitationToken=${invitationToken}`;
+  console.log("🚀 accept-invitation ~ signInOtp ~ url:", url)
+
   const { data, error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${DEFAULT_URL}/auth/callback/accept-invitation?invitationToken=${invitationToken}`,
+      emailRedirectTo: url,
     },
   });
   console.log('🚀 ~ signInOtp ~ data, error:', data, error);

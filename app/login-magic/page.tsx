@@ -12,10 +12,13 @@ export default function Login({ searchParams }: { searchParams: { message: strin
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
+    const url = `${DEFAULT_URL}/auth/callback`;
+
+    console.log("🚀 ~ signInMagicLink ~ url:", url)
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${DEFAULT_URL}/auth/callback`,
+        emailRedirectTo: url,
       },
     });
 
