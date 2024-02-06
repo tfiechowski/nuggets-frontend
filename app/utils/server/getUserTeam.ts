@@ -20,7 +20,7 @@ export async function getUserTeam(): Promise<{
 
   if (!team) {
     // should be handled by global catch?
-    return redirect('/team/create');
+    return redirect('/app/team/create');
   }
   // Redirect here?
 
