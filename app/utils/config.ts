@@ -12,8 +12,10 @@ export const ENV_RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 export const NODE_ENV = process.env.NODE_ENV || 'development';
 
-export const DEFAULT_URL = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://127.0.0.1:3000';
+export const DEFAULT_URL = process.env.VERCEL
+  ? 'https://nuggets-frontend.vercel.app'
+  : process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://127.0.0.1:3000';
 
 export const ENV_RESEND_FORCE_EMAIL = process.env.ENV_RESEND_FORCE_EMAIL;
