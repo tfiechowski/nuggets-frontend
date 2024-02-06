@@ -5,6 +5,7 @@ import { Button } from '@/registry/new-york/ui/button';
 import '@blocknote/react/style.css';
 import { revalidatePath } from 'next/cache';
 import './blocknote-styles.css';
+import { CreateNewCompetitorNoteDialog } from '@/app/app/core/competitors/CreateNewCompetitorNoteDialog';
 
 interface CompetitorNote {
   id: string;
@@ -19,14 +20,18 @@ const handleUpdateNote = async (id: string, content: string) => {
   await supabase.from('competitor_notes').update({ content }).eq('id', id);
 };
 
-const handleCreateNote = async (): Promise<CompetitorNote> => {
+const handleCreateNote = async (competitorName: string): Promise<CompetitorNote> => {
   'use server';
   const supabase = getServerSupabaseClient();
   const team = await getUserTeam();
 
   const { data, error } = await supabase
     .from('competitor_notes')
-    .insert({ content: '# Sample note', competitor_name: 'Test Name', account_id: team.accountId })
+    .insert({
+      content: '# Sample note',
+      competitor_name: competitorName,
+      account_id: team.accountId,
+    })
     .returns<CompetitorNote>();
 
   if (error) {
@@ -44,9 +49,8 @@ export default async function App() {
 
   return (
     <div>
-      <form action={handleCreateNote}>
-        <Button>Add new</Button>
-      </form>
+      <CreateNewCompetitorNoteDialog onCreate={handleCreateNote} />
+
       {data?.map((competitorNote) => (
         <div>
           <h2>{competitorNote.competitor_name}</h2>
