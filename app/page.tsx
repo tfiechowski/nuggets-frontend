@@ -1,11 +1,10 @@
-import DeployButton from '../components/DeployButton';
-import AuthButton from '../components/AuthButton';
-import { createClient } from '@/utils/supabase/server';
 import ConnectSupabaseSteps from '@/components/ConnectSupabaseSteps';
-import SignUpUserSteps from '@/components/SignUpUserSteps';
 import Header from '@/components/Header';
+import SignUpUserSteps from '@/components/SignUpUserSteps';
+import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
-import TestComponent from '@/components/TestComponent';
+import AuthButton from '../components/AuthButton';
+import DeployButton from '../components/DeployButton';
 
 // import { useAccounts} from "@usebasejump/next";
 
@@ -33,8 +32,6 @@ export default async function Index() {
           {isSupabaseConnected && <AuthButton />}
         </div>
       </nav>
-
-      <TestComponent />
 
       <div className="animate-in flex-1 flex flex-col gap-20 opacity-100 max-w-4xl px-3">
         <Header />
