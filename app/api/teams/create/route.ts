@@ -60,6 +60,7 @@ async function handle(
   ]);
 
   const error = await functionalValidator.validate();
+  console.log('🚀 functionalValidator.validate() ~ error:', error);
   if (error) {
     return error;
   }
@@ -68,6 +69,7 @@ async function handle(
     name,
     slug,
   });
+  console.log('🚀 rpc.create_account ~ response:', response);
 
   console.log(`Created an "${name} account (${slug})!`);
 

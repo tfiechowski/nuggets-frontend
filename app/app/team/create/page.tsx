@@ -37,7 +37,7 @@ export default function CreateTeam({ searchParams }: { searchParams: { message: 
         body: JSON.stringify(body),
       });
 
-      console.log("Team Create response:", response);
+      console.log('Team Create response:', response);
 
       if (!response.ok) {
         throw new Error('Failed to submit the data. Please try again.');
