@@ -90,10 +90,11 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ data });
   } catch (error) {
+    console.error("Error: ", error)
     if (error instanceof ZodError) {
       return NextResponse.json({ errors: error.issues });
     } else {
-      return NextResponse.json({}, { status: 400 });
+      return NextResponse.json({ error }, { status: 400 });
     }
   }
 }
