@@ -1,11 +1,19 @@
+import { CreateNewCompetitorNoteDialog } from '@/app/app/core/competitors/CreateNewCompetitorNoteDialog';
 import Editor from '@/app/app/core/competitors/Editor';
 import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
+import { getUserRole } from '@/app/utils/server/getUserRole';
 import { getUserTeam } from '@/app/utils/server/getUserTeam';
-import { Button } from '@/registry/new-york/ui/button';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import '@blocknote/react/style.css';
 import { revalidatePath } from 'next/cache';
 import './blocknote-styles.css';
-import { CreateNewCompetitorNoteDialog } from '@/app/app/core/competitors/CreateNewCompetitorNoteDialog';
+import { Button } from '@/registry/new-york/ui/button';
+import { DeleteConfirmationDialog } from '@/app/app/core/competitors/DeleteConfirmationDialog';
 
 interface CompetitorNote {
   id: string;
@@ -43,25 +51,58 @@ const handleCreateNote = async (competitorName: string): Promise<CompetitorNote>
   return data;
 };
 
+const handleDeleteNote = async (id: string) => {
+  'use server';
+  const supabase = getServerSupabaseClient();
+  const user = await supabase.auth.getUser();
+
+  await supabase.from('competitor_notes').delete().eq('id', id);
+
+  console.log(`Note ${id} deleted by user: ${user.data.user?.email}`);
+
+  revalidatePath('/app/core/competitors');
+};
+
 export default async function App() {
   const competitiveNotes = getServerSupabaseClient();
+  const userRole = await getUserRole();
   const { data } = await competitiveNotes.from('competitor_notes').select('*').order('created_at');
 
   return (
     <div>
-      <CreateNewCompetitorNoteDialog onCreate={handleCreateNote} />
-
-      {data?.map((competitorNote) => (
+      <div className="flex items-center justify-between space-y-2">
         <div>
-          <h2>{competitorNote.competitor_name}</h2>
-
-          <Editor
-            initialContent={competitorNote.content}
-            noteId={competitorNote.id}
-            onUpdate={handleUpdateNote}
-          />
+          <h2 className="text-2xl font-bold tracking-tight">Your battle cards</h2>
         </div>
-      ))}
+        {userRole === 'owner' && (
+          <div className="flex  items-center space-x-2">
+            <CreateNewCompetitorNoteDialog onCreate={handleCreateNote} />
+          </div>
+        )}
+      </div>
+
+      <Accordion type="single" collapsible>
+        {data?.map((competitorNote) => (
+          <div className="p-2">
+            <AccordionItem value={competitorNote.id}>
+              <AccordionTrigger>{competitorNote.competitor_name}</AccordionTrigger>
+              <AccordionContent>
+                <div className="flex items-center justify-between space-y-2">
+                  <div>Note:</div>
+                  <DeleteConfirmationDialog id={competitorNote.id} onDelete={handleDeleteNote} />
+                </div>
+
+                <Editor
+                  editable={userRole === 'owner'}
+                  initialContent={competitorNote.content}
+                  noteId={competitorNote.id}
+                  onUpdate={handleUpdateNote}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          </div>
+        ))}
+      </Accordion>
     </div>
   );
 }

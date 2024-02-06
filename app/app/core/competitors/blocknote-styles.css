@@ -36,7 +36,9 @@
   --bn-colors-highlights-pink-text: #ad1a72;
   --bn-colors-highlights-pink-background: #f4dfeb;
 
-  /* --bn-font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Open Sans", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; */
+  --bn-font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Open Sans',
+    'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
   --bn-border-radius: 6px;
 
   /* Derived values */
@@ -551,4 +553,24 @@
 .bn-container .bn-tick-space {
   padding: 0;
   width: 20px;
+}
+
+.block-container:has(.bn-block-content[data-content-type='heading'][data-level='1']) {
+  /* background: lightskyblue; */
+  font-size: 10px;
+}
+
+.block-container:has(.bn-block-content[data-content-type='heading'][data-level='2']) {
+  /* background: lightcoral; */
+  font-size: 10px;
+}
+
+.block-container:has(.bn-block-content[data-content-type='heading'][data-level='3']) {
+  /* background: lightseagreen; */
+  font-size: 12px;
+}
+
+.tiptap.ProseMirror.bn-root.bn-editor[contenteditable='false'] {
+  padding-inline-start: 0;
+  padding-inline-end: 0;
 }
