@@ -26,7 +26,7 @@ async function handle(
   body: RequestBody
 ): Promise<{ data?: any; error?: any }> {
   const { attachment } = body;
-  console.log("🚀 ~ attachment:", attachment)
+  console.log('🚀 ~ attachment:', attachment);
 
   await CallInvitationService.processNewInvitation(attachment);
 
@@ -39,7 +39,7 @@ async function handle(
   // console.log(`Created an "${name} account (${slug})!`);
 
   // return response;
-  return {}
+  return {};
 }
 
 export async function POST(request: Request) {
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error: ', error);
     if (error instanceof ZodError) {
-      return NextResponse.json({ errors: error.issues}, { status: 400 });
+      return NextResponse.json({ errors: error.issues }, { status: 400 });
     } else {
       return NextResponse.json({ error }, { status: 400 });
     }

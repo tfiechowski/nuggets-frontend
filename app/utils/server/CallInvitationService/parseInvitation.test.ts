@@ -82,31 +82,49 @@ test('parse organizer email', () => {
 test('parse zoom call ID', () => {
   const result = parseInvitation(ics);
 
-  expect(result.zoomCallId).toBe('87001546565');
+  expect(result.zoomCall.id).toBe('87001546565');
 });
 
 test('parse zoom call password', () => {
   const result = parseInvitation(ics);
 
-  expect(result.zoomCallPassword).toBe('kjMeiVdTzpv3wUwbJuwvpMbUq3qzRU.1');
+  expect(result.zoomCall.password).toBe('kjMeiVdTzpv3wUwbJuwvpMbUq3qzRU.1');
 });
 
 test('parse zoom customer domain', () => {
   const result = parseInvitation(ics);
 
-  expect(result.zoomCustomerDomain).toBe('codility');
+  expect(result.zoomCall.customerDomain).toBe('codility');
 });
 
+test('parse zoom call url', () => {
+  const result = parseInvitation(ics);
+
+  expect(result.zoomCall.url).toBe(
+    'https://codility.zoom.us/j/87001546565?pwd=kjMeiVdTzpv3wUwbJuwvpMbUq3qzRU.1'
+  );
+});
 
 test('parse timezone name', () => {
   const result = parseInvitation(ics);
 
-  expect(result.timezone).toBe('CET');
+  expect(result.timezone).toBe('Europe/Warsaw');
 });
-
 
 test('parse uid', () => {
   const result = parseInvitation(ics);
 
   expect(result.uid).toBe('2l7ou52uerottd2083ald2adr4@google.com');
+});
+
+test('parse start', () => {
+  const result = parseInvitation(ics);
+
+  expect(result.start).toBe('2024-02-27T11:00:00.000Z');
+});
+
+test('parse end', () => {
+  const result = parseInvitation(ics);
+
+  expect(result.end).toBe('2024-02-27T12:30:00.000Z');
 });

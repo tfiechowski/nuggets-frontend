@@ -41,7 +41,7 @@ model Membership {
   invitedName  String?
   invitedEmail String?
 
-  @@unique([organizationId, invitedEmail])
+  @@unique([organizationId, userId])
   @@map(name: "memberships")
 }
 
@@ -83,10 +83,15 @@ enum CustomerCallProvider {
 }
 
 model CustomerCall {
-  id          String               @id @default(cuid())
-  provider    CustomerCallProvider
-  scheduledAt DateTime             @map("scheduled_at")
-  data        Json
-  organizer   Membership           @relation(fields: [organizerId], references: [id])
-  organizerId String
+  id             String               @id @default(cuid())
+  eventId        String               @map("event_id")
+  provider       CustomerCallProvider
+  timezone       String
+  scheduledAt    DateTime             @map("scheduled_at")
+  scheduledEndAt DateTime             @map("scheduled_end_at")
+  data           Json
+  organizer      Membership           @relation(fields: [organizerId], references: [id])
+  organizerId    String
+
+  @@map(name: "customer_calls")
 }
