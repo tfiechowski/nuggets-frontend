@@ -1,22 +1,43 @@
 import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
 import { redirect } from 'next/navigation';
+import { prisma } from '@/lib/db';
 
 export async function getUserTeam(): Promise<{
   accountId: string;
-  role: 'member' | 'owner';
+  role: any;
   name: string;
 }> {
   const supabase = getServerSupabaseClient();
 
   const user = await supabase.auth.getUser();
 
-  const { data, error } = await supabase.rpc('get_accounts');
+  const userId = user.data.user?.id;
 
-  if (error) {
-    throw new Error(error.message);
+  if (userId === undefined) {
+    throw new Error('Invalid user session. No userId');
   }
 
-  const team = data.find((account: any) => account.personal_account === false);
+  const result = await prisma.organization.findMany({
+    where: {
+      membership: {
+        every: {
+          userId,
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      membership: true,
+    },
+  });
+  console.log('🚀 ~ getUserTeam ~ result:', JSON.stringify(result));
+
+  if (result.length > 1) {
+    console.warn('User has more than one team');
+  }
+
+  const team = result[0];
 
   if (!team) {
     // should be handled by global catch?
@@ -24,5 +45,6 @@ export async function getUserTeam(): Promise<{
   }
   // Redirect here?
 
-  return { accountId: team.account_id, role: team.account_role, name: team.name };
+  const res = result.map((t) => ({ accountId: t.id, role: t.membership[0].role, name: t.name }))[0];
+  return res;
 }

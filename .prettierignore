@@ -1,2 +1,4 @@
 .next
 node_modules
+
+frontend/prisma/schema.prisma
