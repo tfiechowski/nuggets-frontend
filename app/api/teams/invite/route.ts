@@ -1,14 +1,16 @@
 import { DEFAULT_URL } from '@/app/utils/config';
 import { sendEmail } from '@/app/utils/email/sendEmail';
+import { OrganizationService } from '@/app/utils/server/OrganizationService';
 import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
 import { getTeamMembers } from '@/app/utils/server/getTeamMembers';
-import { getUserTeam } from '@/app/utils/server/getUserTeam';
+import { getUserOrganization } from '@/app/utils/server/getUserTeam';
 import { FunctionalValidator, IFunctionalRuleValidator } from '@/lib/validator';
 import { SupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { createServerClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { ZodError, z } from 'zod';
+import { MembershipRole } from '@prisma/client';
 
 interface RequestBody {
   email: string;
@@ -17,7 +19,7 @@ interface RequestBody {
 
 const RequestBody = z.object({
   email: z.string(),
-  role: z.enum(['member', 'owner']),
+  role: z.nativeEnum(MembershipRole),
 });
 
 const validateNotTeamMemberAlready: IFunctionalRuleValidator = (email: string) => async () => {
@@ -29,9 +31,9 @@ const validateNotTeamMemberAlready: IFunctionalRuleValidator = (email: string) =
 };
 
 const validateCanInviteUsers: IFunctionalRuleValidator = () => async () => {
-  const userTeam = await getUserTeam();
+  const userTeam = await getUserOrganization();
 
-  return userTeam.role === 'owner' ? {} : { error: "You don't have permissions" };
+  return userTeam.role === MembershipRole.OWNER ? {} : { error: "You don't have permissions" };
 };
 
 async function handle(
@@ -52,7 +54,7 @@ async function handle(
     return validationError;
   }
 
-  const userTeam = await getUserTeam();
+  const userTeam = await getUserOrganization();
 
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL as any,

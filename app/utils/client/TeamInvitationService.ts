@@ -1,7 +1,9 @@
+import { MembershipRole } from '@prisma/client';
+
 export class TeamInvitationService {
   static async inviteUserToTeam(
     email: string,
-    role: 'member' | 'owner'
+    role: MembershipRole
   ): Promise<{ error?: any; data?: any }> {
     const response = await fetch('/api/teams/invite', {
       method: 'POST',

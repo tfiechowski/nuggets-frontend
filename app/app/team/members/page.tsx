@@ -1,10 +1,10 @@
 import { DataTable } from '@/app/app/team/members/MembersTable';
 import { UserInviteDialog } from '@/app/app/team/members/UserInviteDialog';
-import { getTeamMembers } from '@/app/utils/server/getTeamMembers';
-import { getUserTeam } from '@/app/utils/server/getUserTeam';
+import { getUserOrganization } from '@/app/utils/server/getUserTeam';
 
-import { getTeamInvitations } from '@/app/utils/server/getTeamInvitations';
 import { ColumnDef } from '@tanstack/react-table';
+import { OrganizationService } from '@/app/utils/server/OrganizationService';
+import { MembershipRole } from '@prisma/client';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -30,15 +30,19 @@ const columns: ColumnDef<User>[] = [
 ];
 
 async function getIsTeamOwner() {
-  const team = await getUserTeam();
+  const team = await getUserOrganization();
 
-  return team.role === 'owner';
+  return team.role === MembershipRole.OWNER;
 }
 
 export default async function Manage() {
-  const members = await getTeamMembers();
+  const userOrganization = await getUserOrganization();
+  const members = await OrganizationService.getOrganizationMembers(userOrganization.accountId);
   const isTeamOwner = await getIsTeamOwner();
-  const invitations = await getTeamInvitations();
+
+  const invitations = await OrganizationService.getOrganizationInvitations(
+    userOrganization.accountId
+  );
 
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
@@ -56,7 +60,7 @@ export default async function Manage() {
 
       <div className="py-8">
         <h3 className="text-xl font-bold tracking-tight pb-8">Invitations</h3>
-        <div>You have {invitations} pending invitations</div>
+        <div>You have {invitations.length} pending invitations</div>
       </div>
     </div>
   );

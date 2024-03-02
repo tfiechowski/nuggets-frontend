@@ -2,10 +2,11 @@
 
 import { createContext, useMemo } from 'react';
 import { useAccounts } from '@usebasejump/next';
+import { MembershipRole } from '@prisma/client';
 
 interface Account {
   accountId: string;
-  accountRole: 'member' | 'owner';
+  accountRole: MembershipRole;
   name: string;
   slug: string;
 }

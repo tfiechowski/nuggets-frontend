@@ -25,13 +25,14 @@ import {
 import { TeamInvitationService } from '@/app/utils/client/TeamInvitationService';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { MembershipRole } from '@prisma/client';
 
 const userInviteFormSchema = z.object({
   email: z
     .string()
     .min(1, { message: 'This field has to be filled' })
     .email('This is not a valid email'),
-  role: z.enum(['member', 'owner']),
+  role: z.nativeEnum(MembershipRole),
 });
 
 export function UserInviteForm({

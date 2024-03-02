@@ -2,7 +2,7 @@ import { CreateNewCompetitorNoteDialog } from '@/app/app/core/competitors/Create
 import Editor from '@/app/app/core/competitors/Editor';
 import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
 import { getUserRole } from '@/app/utils/server/getUserRole';
-import { getUserTeam } from '@/app/utils/server/getUserTeam';
+import { getUserOrganization } from '@/app/utils/server/getUserTeam';
 import {
   Accordion,
   AccordionContent,
@@ -14,6 +14,7 @@ import { revalidatePath } from 'next/cache';
 import './blocknote-styles.css';
 import { Button } from '@/registry/new-york/ui/button';
 import { DeleteConfirmationDialog } from '@/app/app/core/competitors/DeleteConfirmationDialog';
+import { MembershipRole } from '@prisma/client';
 
 interface CompetitorNote {
   id: string;
@@ -31,7 +32,7 @@ const handleUpdateNote = async (id: string, content: string) => {
 const handleCreateNote = async (competitorName: string): Promise<CompetitorNote> => {
   'use server';
   const supabase = getServerSupabaseClient();
-  const team = await getUserTeam();
+  const team = await getUserOrganization();
 
   const { data, error } = await supabase
     .from('competitor_notes')
@@ -74,7 +75,7 @@ export default async function App() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Your battle cards</h2>
         </div>
-        {userRole === 'owner' && (
+        {userRole === MembershipRole.OWNER && (
           <div className="flex  items-center space-x-2">
             <CreateNewCompetitorNoteDialog onCreate={handleCreateNote} />
           </div>
@@ -93,7 +94,7 @@ export default async function App() {
                 </div>
 
                 <Editor
-                  editable={userRole === 'owner'}
+                  editable={userRole === MembershipRole.OWNER}
                   initialContent={competitorNote.content}
                   noteId={competitorNote.id}
                   onUpdate={handleUpdateNote}

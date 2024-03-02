@@ -3,6 +3,7 @@ import { SupabaseClient, createRouteHandlerClient } from '@supabase/auth-helpers
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { ZodError, z } from 'zod';
+import { MembershipRole } from '@prisma/client';
 
 interface RequestBody {
   id: string;
@@ -36,7 +37,7 @@ const validateOwner: IFunctionalRuleValidator =
     }
 
     return data.find((account: any) =>
-      account.account_id === accountId && account.account_role === 'owner'
+      account.account_id === accountId && account.account_role === MembershipRole.OWNER
         ? {}
         : { error: "User doesn't have edit rights to this resource" }
     );
