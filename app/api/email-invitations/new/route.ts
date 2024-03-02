@@ -1,4 +1,3 @@
-
 import {
   FunctionalValidator,
   IRuleValidator,
@@ -26,7 +25,6 @@ async function handle(
   body: { name: string; slug: string }
 ): Promise<{ data?: any; error?: any }> {
   const { name, slug } = body;
-
 
   const response = await supabase.from('basejump.', {
     name,

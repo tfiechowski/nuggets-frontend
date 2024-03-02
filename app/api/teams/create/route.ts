@@ -1,3 +1,4 @@
+import { OrganizationService } from '@/app/utils/server/OrganizationService';
 import {
   FunctionalValidator,
   IRuleValidator,
@@ -14,76 +15,45 @@ import { ZodError, z } from 'zod';
 
 interface RequestBody {
   name: string;
-  slug: string;
 }
 
 const RequestBody = z.object({
   name: z.string(),
-  slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
 });
 
-const validateSlug: IFunctionalRuleValidator =
-  (supabase: SupabaseClient, slug: string) => async () => {
-    const { error } = await supabase.rpc('get_account_by_slug', { slug });
-    console.log('🚀 ~ validateSlug ~ error:', error);
+const validateFirstTeam: IFunctionalRuleValidator = (userId: string) => async () => {
+  try {
+    const userOrganisations = await OrganizationService.getUserOrganisations(userId);
 
-    if (error?.message === 'Not found') {
-      return {};
+    if (userOrganisations.length > 0) {
+      return { error: 'User already has a team' };
     }
-
-    return { error: 'Slug already exists' };
-  };
-
-const validateFirstTeam: IFunctionalRuleValidator = (supabase: SupabaseClient) => async () => {
-  const { data, error } = await supabase.rpc('get_accounts');
-
-  if (error) {
+  } catch (error) {
     return { error: `Error happened: ${error}` };
   }
 
-  // User can have both personal and team account, that's why two
-  if (data.length >= 2) {
-    return { error: 'User already has a team' };
-  }
   return {};
 };
 
 async function handle(
-  supabase: SupabaseClient,
-  body: { name: string; slug: string }
+  userId: string,
+  body: { name: string }
 ): Promise<{ data?: any; error?: any }> {
-  const { name, slug } = body;
+  const { name } = body;
 
-  const functionalValidator = new FunctionalValidator([
-    validateSlug(supabase, slug),
-    validateFirstTeam(supabase),
-  ]);
+  const functionalValidator = new FunctionalValidator([validateFirstTeam(userId)]);
 
   const error = await functionalValidator.validate();
-  console.log('🚀 functionalValidator.validate() ~ error:', error);
+
   if (error.error) {
     return error;
   }
 
-  const user = await supabase.auth.getUser()
+  const organization = await OrganizationService.createOrganization(userId, name);
 
-  const response = await supabase.rpc('create_account', {
-    name,
-    slug,
-  });
+  console.log(`Created an "${organization.name} account (id: ${organization.id})!`);
 
-  const { account_id: accountId} = response.data;
-
-  console.log('🚀 rpc.create_account ~ response:', response);
-  
-  const updateResponse = await supabase.from('users').update({
-    account: accountId
-  }).eq('id', user.data.user?.id);
-  console.log("🚀 ~ updateResponse ~ updateResponse:", updateResponse)
-  
-  console.log(`Created an "${name} account (${slug})!`);
-
-  return response;
+  return { data: organization, error: undefined };
 }
 
 export async function POST(request: Request) {
@@ -92,8 +62,15 @@ export async function POST(request: Request) {
 
     const cookieStore = cookies();
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const user = await supabase.auth.getUser();
 
-    const { data, error } = await handle(supabase, body);
+    const userId = user.data.user?.id;
+
+    if (userId === undefined) {
+      return NextResponse.json({ error: 'Invalid user session' });
+    }
+
+    const { data, error } = await handle(userId, body);
 
     if (error) {
       return NextResponse.json({ error });

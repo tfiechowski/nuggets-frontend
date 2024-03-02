@@ -54,7 +54,7 @@ export async function GET(request: Request) {
 
     const user = await supabase.auth.getUser();
 
-    console.log("Invitation accept user:", user);
+    console.log('Invitation accept user:', user);
 
     const url = `${DEFAULT_URL}${next}`;
     return NextResponse.redirect(url);

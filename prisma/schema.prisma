@@ -9,22 +9,28 @@ datasource db {
 }
 
 model Organization {
-  id   String    @id @default(cuid())
+  id   String @id @default(cuid())
   name String
 
   membership Membership[]
-  
+
   @@map(name: "organization")
 }
 
+enum MembershipRole {
+  OWNER
+  ADMIN
+  USER
+}
+
 model Membership {
-  id   String            @id @default(cuid())
-  role MembershipRole
+  id   String         @id @default(cuid())
+  role MembershipRole @default(USER)
 
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
 
-  user   User? @relation(fields: [userId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id])
   userId String?
 
   // When the user joins, we will clear out the name and email and set the user.
@@ -32,14 +38,7 @@ model Membership {
   invitedEmail String?
 
   @@unique([organizationId, invitedEmail])
-  
   @@map(name: "memberships")
-}
-
-enum MembershipRole {
-  OWNER
-  ADMIN
-  USER
 }
 
 // The owners of the SaaS (you) can have a SUPERADMIN role to access all data
@@ -49,7 +48,7 @@ enum GlobalRole {
 }
 
 model User {
-  id        String        @id @default(cuid())
+  id        String     @id @default(cuid())
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
   name      String?
