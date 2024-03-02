@@ -83,7 +83,10 @@ enum CustomerCallProvider {
 }
 
 model CustomerCall {
-  id             String               @id @default(cuid())
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   eventId        String               @map("event_id")
   provider       CustomerCallProvider
   timezone       String
