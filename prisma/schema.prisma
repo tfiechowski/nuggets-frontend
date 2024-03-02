@@ -37,10 +37,6 @@ model Membership {
   // Customer calls for a given user (membership)
   customerCall CustomerCall[]
 
-  // When the user joins, we will clear out the name and email and set the user.
-  invitedName  String?
-  invitedEmail String?
-
   @@unique([organizationId, userId])
   @@map(name: "memberships")
 }
