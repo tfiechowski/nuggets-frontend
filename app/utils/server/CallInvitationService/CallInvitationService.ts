@@ -3,7 +3,7 @@ import { parseInvitation } from '@/app/utils/server/CallInvitationService/parseI
 import { CustomerCallProvider } from '@prisma/client';
 
 export class CallInvitationService {
-  public static async processNewInvitation(attachment: string) {
+  public static async processEmailInvitation(attachment: string) {
     const invite = await fetch(attachment);
     const inviteContent = await invite.text();
 

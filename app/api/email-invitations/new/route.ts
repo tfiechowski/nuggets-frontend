@@ -28,7 +28,7 @@ async function handle(
   const { attachment } = body;
   console.log('🚀 ~ attachment:', attachment);
 
-  await CallInvitationService.processNewInvitation(attachment);
+  await CallInvitationService.processEmailInvitation(attachment);
 
   // const response = await supabase.from('basejump.', {
   //   name,
