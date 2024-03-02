@@ -11,10 +11,11 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { ZodError, z } from 'zod';
 import { MembershipRole } from '@prisma/client';
+import { UserService } from '@/app/utils/server/UserService';
 
 interface RequestBody {
   email: string;
-  role: string;
+  role: MembershipRole;
 }
 
 const RequestBody = z.object({
@@ -61,35 +62,30 @@ async function handle(
     process.env.SUPABASE_SERVICE_ROLE_KEY as any
   );
 
-  await supabaseAdmin.auth.admin.createUser({ email, email_confirm: true });
+  if (await UserService.exists(email)) {
+    return { error: 'Multiple orgs are not supported yet' };
+  } else {
+    const createdUser = await supabaseAdmin.auth.admin.createUser({ email, email_confirm: true });
+    const userId = createdUser.data.user?.id as string;
 
-  const { data, error } = await supabase.rpc('create_invitation', {
-    account_id: userTeam.accountId,
-    account_role: role,
-    invitation_type: 'one_time',
-  });
-  console.log('🚀 create_invitation ~ data, error:', data, error);
+    const invitation = await OrganizationService.inviteUser(userTeam.accountId, userId, role);
 
-  const { token: invitationToken } = data;
+    const { id: invitationToken } = invitation;
 
-  if (error) {
-    console.log('Cannot create invitation', error);
-    return { error };
+    const emailResponse = await sendEmail({
+      to: email,
+      subject: `Nuggets - You've been invited to join ${userTeam.name}`,
+      html: `<a href="${DEFAULT_URL}/auth/accept-invitation?invitationToken=${invitationToken}&company=${userTeam.name}&email=${email}">Join!</a>`,
+    });
+
+    if (emailResponse.error) {
+      console.error('Cannot send an email', emailResponse.error);
+      return { error: emailResponse.error };
+    }
+
+    console.log(`Created an invitation for ${email} to account (${userTeam.accountId})!`);
+    return {};
   }
-
-  const emailResponse = await sendEmail({
-    to: email,
-    subject: `Nuggets - You've been invited to join ${userTeam.name}`,
-    html: `<a href="${DEFAULT_URL}/auth/accept-invitation?invitationToken=${invitationToken}&company=${userTeam.name}&email=${email}">Join!</a>`,
-  });
-
-  if (emailResponse.error) {
-    console.error('Cannot send an email', emailResponse.error);
-    return { error: emailResponse.error };
-  }
-
-  console.log(`Created an invitation for ${email} to account (${userTeam.accountId})!`);
-  return {};
 }
 
 export async function POST(request: Request) {
@@ -105,10 +101,12 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ data });
   } catch (error) {
+    console.log('🚀 ~ POST ~ error:', error);
     if (error instanceof ZodError) {
       return NextResponse.json({ errors: error.issues });
     } else {
-      return NextResponse.json({}, { status: 400 });
+      console.log('Non Zod error', error);
+      return NextResponse.json({ error }, { status: 400 });
     }
   }
 }

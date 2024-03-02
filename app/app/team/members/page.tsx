@@ -11,7 +11,7 @@ import { MembershipRole } from '@prisma/client';
 export type User = {
   name: string;
   email: string;
-  role: string;
+  role: MembershipRole;
 };
 
 const columns: ColumnDef<User>[] = [

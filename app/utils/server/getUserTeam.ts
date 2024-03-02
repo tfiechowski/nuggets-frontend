@@ -12,20 +12,17 @@ export async function getUserOrganization(): Promise<{
   // TODO: move this to repo/service method?
   const userId = await getUserId();
 
-  const result = await prisma.organization.findMany({
+  const r = await prisma.membership.findMany({
     where: {
-      membership: {
-        every: {
-          userId,
-        },
-      },
+      userId,
     },
     select: {
-      id: true,
-      name: true,
-      membership: true,
+      role: true,
+      organization: true,
     },
   });
+
+  const result = r.map((m) => ({ ...m.organization, role: m.role }));
 
   if (result.length > 1) {
     console.warn('User has more than one team');
@@ -39,6 +36,6 @@ export async function getUserOrganization(): Promise<{
   }
   // Redirect here?
 
-  const res = result.map((t) => ({ accountId: t.id, role: t.membership[0].role, name: t.name }))[0];
+  const res = result.map((t) => ({ accountId: t.id, role: t.role, name: t.name }))[0];
   return res;
 }

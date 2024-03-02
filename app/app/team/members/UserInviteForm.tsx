@@ -43,11 +43,12 @@ export function UserInviteForm({
   onSuccess: () => void;
 }) {
   const [_error, setError] = useState<any>(null);
+  console.log('🚀 ~ _error:', _error);
   const form = useForm<z.infer<typeof userInviteFormSchema>>({
     resolver: zodResolver(userInviteFormSchema),
     defaultValues: {
       email: '',
-      role: 'member',
+      role: MembershipRole.USER,
     },
   });
 
@@ -122,8 +123,8 @@ export function UserInviteForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="member">Member</SelectItem>
-                        <SelectItem value="owner">Owner</SelectItem>
+                        <SelectItem value={MembershipRole.USER}>User</SelectItem>
+                        <SelectItem value={MembershipRole.OWNER}>Owner</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

@@ -2,6 +2,8 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { type CookieOptions, createServerClient } from '@supabase/ssr';
 import { DEFAULT_URL } from '@/app/utils/config';
+import { prisma } from '@/lib/db';
+import { OrganizationService } from '@/app/utils/server/OrganizationService';
 
 export async function GET(request: Request) {
   console.log('🚀 ~ /auth/invitation/accept ~ GET:');
@@ -44,13 +46,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${DEFAULT_URL}/auth/auth-code-error`);
     }
 
-    const acceptInvitationRes = await supabase.rpc('accept_invitation', {
-      lookup_invitation_token: invitationToken,
-    });
-
-    if (acceptInvitationRes.error) {
-      console.error('🚀 ~ acceptInvitationRes.error:', acceptInvitationRes.error);
-    }
+    await OrganizationService.acceptInvite(invitationToken);
 
     const user = await supabase.auth.getUser();
 

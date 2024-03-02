@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db';
-import { MembershipRole } from '@prisma/client';
+import dayjs from 'dayjs';
+import { MembershipRole, OrganizationInvitation, User } from '@prisma/client';
 
 export class OrganizationService {
   public static async createOrganization(userId: string, name: string) {
@@ -38,6 +39,51 @@ export class OrganizationService {
     return prisma.organizationInvitation.findMany({
       where: {
         organizationId,
+      },
+    });
+  }
+
+  public static async inviteUser(
+    organizationId: string,
+    userId: string,
+    role: MembershipRole
+  ): Promise<OrganizationInvitation> {
+    await prisma.membership.create({
+      data: {
+        organizationId,
+        userId,
+        role,
+      },
+    });
+
+    return prisma.organizationInvitation.create({
+      data: {
+        organizationId,
+        userId,
+      },
+    });
+  }
+
+  public static async acceptInvite(invitationId: string) {
+    const invitation = await prisma.organizationInvitation.findUnique({
+      where: {
+        id: invitationId,
+      },
+    });
+
+    if (invitation === null) {
+      return { error: 'Cannot accept invitation' };
+    }
+
+    const sevenDaysAgo = dayjs().subtract(7, 'days').format();
+
+    if (invitation.createdAt.toISOString() < sevenDaysAgo) {
+      throw new Error('Invitation no longer valid');
+    }
+
+    prisma.organization.delete({
+      where: {
+        id: invitationId,
       },
     });
   }
