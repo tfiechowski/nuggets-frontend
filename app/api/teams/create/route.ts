@@ -61,16 +61,26 @@ async function handle(
 
   const error = await functionalValidator.validate();
   console.log('🚀 functionalValidator.validate() ~ error:', error);
-  if (error) {
+  if (error.error) {
     return error;
   }
+
+  const user = await supabase.auth.getUser()
 
   const response = await supabase.rpc('create_account', {
     name,
     slug,
   });
-  console.log('🚀 rpc.create_account ~ response:', response);
 
+  const { account_id: accountId} = response.data;
+
+  console.log('🚀 rpc.create_account ~ response:', response);
+  
+  const updateResponse = await supabase.from('users').update({
+    account: accountId
+  }).eq('id', user.data.user?.id);
+  console.log("🚀 ~ updateResponse ~ updateResponse:", updateResponse)
+  
   console.log(`Created an "${name} account (${slug})!`);
 
   return response;
