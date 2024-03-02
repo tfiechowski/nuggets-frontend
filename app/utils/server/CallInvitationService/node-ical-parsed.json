@@ -1,0 +1,108 @@
+{
+  "c980b546-1f4b-4d0c-8f96-991a001dbd63": {
+    "type": "VTIMEZONE",
+    "params": [],
+    "tzid": "Europe/Warsaw",
+    "LIC-LOCATION": "Europe/Warsaw",
+    "40a47e03-4ee8-4fc7-9d78-db6d1d7c4df1": {
+      "type": "DAYLIGHT",
+      "params": [],
+      "tzoffsetfrom": "+0100",
+      "tzoffsetto": "+0200",
+      "tzname": "CEST",
+      "start": "1970-03-29T01:00:00.000Z",
+      "datetype": "date-time",
+      "rrule": "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU",
+      "end": "1970-03-29T01:00:00.000Z"
+    },
+    "f6aa80f0-b406-43e6-b41e-68b111cb6faa": {
+      "type": "STANDARD",
+      "params": [],
+      "tzoffsetfrom": "+0200",
+      "tzoffsetto": "+0100",
+      "tzname": "CET",
+      "start": "1970-10-25T02:00:00.000Z",
+      "datetype": "date-time",
+      "rrule": "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU",
+      "end": "1970-10-25T02:00:00.000Z"
+    },
+    "end": "2024-03-03T20:31:16.167Z",
+    "method": "REQUEST"
+  },
+  "2l7ou52uerottd2083ald2adr4@google.com": {
+    "type": "VEVENT",
+    "params": [],
+    "start": "2024-02-27T11:00:00.000Z",
+    "datetype": "date-time",
+    "end": "2024-02-27T12:30:00.000Z",
+    "dtstamp": "2024-02-26T20:30:55.000Z",
+    "organizer": {
+      "params": {
+        "CN": "Tomek Fiechowski"
+      },
+      "val": "mailto:tomasz.fiechowski@gmail.com"
+    },
+    "uid": "2l7ou52uerottd2083ald2adr4@google.com",
+    "attendee": [
+      {
+        "params": {
+          "CUTYPE": "INDIVIDUAL",
+          "ROLE": "REQ-PARTICIPANT",
+          "PARTSTAT": "NEEDS-ACTION",
+          "RSVP": true,
+          "CN": "help.bt6qt0@zapiermail.com",
+          "X-NUM-GUESTS": 0
+        },
+        "val": "mailto:help.bt6qt0@zapiermail.com"
+      },
+      {
+        "params": {
+          "CUTYPE": "INDIVIDUAL",
+          "ROLE": "REQ-PARTICIPANT",
+          "PARTSTAT": "ACCEPTED",
+          "RSVP": true,
+          "CN": "Tomek Fiechowski",
+          "X-NUM-GUESTS": 0
+        },
+        "val": "mailto:tomasz.fiechowski@gmail.com"
+      }
+    ],
+    "MICROSOFT-CDO-OWNERAPPTID": "-201505552",
+    "created": "2024-02-26T19:18:08.000Z",
+    "description": "<p><br>──────────<br><br>Hi there, <br><br>Tomasz Fiechowski is inviting you to a scheduled Zoom meeting. <br><br>Join from PC, Mac, Linux, iOS or Android: https://codility.zoom.us/j/87001546565?pwd=kjMeiVdTzpv3wUwbJuwvpMbUq3qzRU.1<br>    Password: 226197<br><br>Or iPhone one-tap :<br>    US: +13602095623,,87001546565#  or +13863475053,,87001546565# <br>Or Telephone:<br>    Dial(for higher quality, dial a number based on your current location): <br>        US: +1 360 209 5623  or +1 386 347 5053  or +1 408 638 0968  or +1 507 473 4847  or +1 564 217 2000  or +1 646 876 9923  or +1 646 931 3860  or +1 669 444 9171  or +1 669 900 6833  or +1 689 278 1000  or +1 719 359 4580  or +1 253 205 0468  or +1 253 215 8782  or +1 301 715 8592  or +1 305 224 1968  or +1 309 205 3325  or +1 312 626 6799  or +1 346 248 7799 <br>    Meeting ID: 870 0154 6565<br>    International numbers available: https://codility.zoom.us/u/kdC22zusp3<br><br><br><br>──────────</p>",
+    "lastmodified": "2024-02-26T20:30:54.000Z",
+    "location": "https://codility.zoom.us/j/87001546565?pwd=kjMeiVdTzpv3wUwbJuwvpMbUq3qzRU.1",
+    "sequence": "5",
+    "status": "CONFIRMED",
+    "summary": "Tomasz Fiechowski's Zoom Meeting",
+    "transparency": "OPAQUE",
+    "alarms": [
+      {
+        "type": "VALARM",
+        "params": [],
+        "action": "EMAIL",
+        "description": "This is an event reminder",
+        "summary": "Alarm notification",
+        "attendee": "mailto:help.bt6qt0@zapiermail.com",
+        "trigger": "-P0DT0H10M0S",
+        "end": "2024-03-03T20:31:16.168Z"
+      },
+      {
+        "type": "VALARM",
+        "params": [],
+        "action": "DISPLAY",
+        "description": "This is an event reminder",
+        "trigger": "-P0DT0H30M0S",
+        "end": "2024-03-03T20:31:16.168Z"
+      }
+    ],
+    "method": "REQUEST"
+  },
+  "vcalendar": {
+    "type": "VCALENDAR",
+    "prodid": "-//Google Inc//Google Calendar 70.9054//EN",
+    "version": "2.0",
+    "calscale": "GREGORIAN",
+    "method": "REQUEST"
+  }
+}

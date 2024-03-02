@@ -34,6 +34,9 @@ model Membership {
   user   User?   @relation(fields: [userId], references: [id])
   userId String?
 
+  // Customer calls for a given user (membership)
+  customerCall CustomerCall[]
+
   // When the user joins, we will clear out the name and email and set the user.
   invitedName  String?
   invitedEmail String?
@@ -73,4 +76,17 @@ model OrganizationInvitation {
   userId String @unique
 
   @@map(name: "organization_invitations")
+}
+
+enum CustomerCallProvider {
+  ZOOM
+}
+
+model CustomerCall {
+  id          String               @id @default(cuid())
+  provider    CustomerCallProvider
+  scheduledAt DateTime             @map("scheduled_at")
+  data        Json
+  organizer   Membership           @relation(fields: [organizerId], references: [id])
+  organizerId String
 }

@@ -11,6 +11,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { ZodError, z } from 'zod';
 import { createClient } from '@/utils/supabase/server';
+import { CallInvitationService } from '@/app/utils/server/CallInvitationService';
 
 interface RequestBody {
   attachment: string;
@@ -22,19 +23,23 @@ const RequestBody = z.object({
 
 async function handle(
   supabase: SupabaseClient,
-  body: { name: string; slug: string }
+  body: RequestBody
 ): Promise<{ data?: any; error?: any }> {
-  const { name, slug } = body;
+  const { attachment } = body;
+  console.log("🚀 ~ attachment:", attachment)
 
-  const response = await supabase.from('basejump.', {
-    name,
-    slug,
-  });
-  console.log('🚀 rpc.create_account ~ response:', response);
+  await CallInvitationService.processNewInvitation(attachment);
 
-  console.log(`Created an "${name} account (${slug})!`);
+  // const response = await supabase.from('basejump.', {
+  //   name,
+  //   slug,
+  // });
+  // console.log('🚀 rpc.create_account ~ response:', response);
 
-  return response;
+  // console.log(`Created an "${name} account (${slug})!`);
+
+  // return response;
+  return {}
 }
 
 export async function POST(request: Request) {
@@ -53,7 +58,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error: ', error);
     if (error instanceof ZodError) {
-      return NextResponse.json({ errors: error.issues });
+      return NextResponse.json({ errors: error.issues}, { status: 400 });
     } else {
       return NextResponse.json({ error }, { status: 400 });
     }
