@@ -43,4 +43,13 @@ export class BotCallService {
       return botCalls;
     });
   }
+
+  public static async markCalls(botCallIds: Array<string>, status: BotCallStatus) {
+    return await prisma.botCall.updateMany({
+      where: { id: { in: botCallIds } },
+      data: {
+        status,
+      },
+    });
+  }
 }
