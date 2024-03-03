@@ -22,7 +22,7 @@ export class BotCallService {
         data: callsToSchedule.map((call) => ({
           id: call.id,
           callId: call.id,
-          data: JSON.stringify(call.data),
+          data: call.data as any,
           organizer: call.organizerId,
           provider: call.provider,
           scheduledAt: call.scheduledAt,

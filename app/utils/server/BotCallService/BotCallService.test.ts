@@ -62,7 +62,14 @@ test('should mark a call for schedule', async () => {
 
   expect(botCalls.length).toEqual(1);
   expect(botCalls[0].data).toEqual(
-    '{"zoom":{"id":"89404747101","url":"https://codility.zoom.us/j/89404747101?pwd=7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1","password":"7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1","customerDomain":"codility"}}'
+    {
+        zoom: {
+          id: '89404747101',
+          url: 'https://codility.zoom.us/j/89404747101?pwd=7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
+          password: '7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
+          customerDomain: 'codility',
+        },
+      }
   );
   expect(botCalls[0].provider).toEqual('ZOOM');
 
@@ -70,7 +77,14 @@ test('should mark a call for schedule', async () => {
 
   const botCall = await prisma.botCall.findFirstOrThrow();
   expect(botCall.data).toEqual(
-    '{"zoom":{"id":"89404747101","url":"https://codility.zoom.us/j/89404747101?pwd=7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1","password":"7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1","customerDomain":"codility"}}'
+    {
+        zoom: {
+          id: '89404747101',
+          url: 'https://codility.zoom.us/j/89404747101?pwd=7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
+          password: '7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
+          customerDomain: 'codility',
+        },
+      }
   );
   expect(botCall.status).toEqual('MARKED_FOR_SCHEDULE');
 });
