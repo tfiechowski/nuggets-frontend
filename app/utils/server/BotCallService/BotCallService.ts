@@ -45,7 +45,7 @@ export class BotCallService {
   }
 
   public static async markCalls(botCallIds: Array<string>, status: BotCallStatus) {
-    return await prisma.botCall.updateMany({
+    return prisma.botCall.updateMany({
       where: { id: { in: botCallIds } },
       data: {
         status,
