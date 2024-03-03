@@ -7,11 +7,18 @@ export class BotCallService {
   public static async selectAndMarkForSchedule() {
     const interval = dayjs().add(90, 'second').toISOString();
 
+    // TODO: with more customer calls, this will be uneffective
+    // as the database will grow.
     return await prisma.$transaction(async (tx) => {
       const callsToSchedule = await tx.customerCall.findMany({
         where: {
           scheduledAt: {
             lte: interval,
+          },
+          NOT: {
+            scheduledEndAt: {
+              lte: new Date().toISOString(),
+            },
           },
         },
       });

@@ -61,32 +61,96 @@ test('should mark a call for schedule', async () => {
   const botCalls = await BotCallService.selectAndMarkForSchedule();
 
   expect(botCalls.length).toEqual(1);
-  expect(botCalls[0].data).toEqual(
-    {
-        zoom: {
-          id: '89404747101',
-          url: 'https://codility.zoom.us/j/89404747101?pwd=7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
-          password: '7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
-          customerDomain: 'codility',
-        },
-      }
-  );
+  expect(botCalls[0].data).toEqual({
+    zoom: {
+      id: '89404747101',
+      url: 'https://codility.zoom.us/j/89404747101?pwd=7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
+      password: '7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
+      customerDomain: 'codility',
+    },
+  });
   expect(botCalls[0].provider).toEqual('ZOOM');
 
   expect(await prisma.botCall.count()).toEqual(1);
 
   const botCall = await prisma.botCall.findFirstOrThrow();
-  expect(botCall.data).toEqual(
-    {
+  expect(botCall.data).toEqual({
+    zoom: {
+      id: '89404747101',
+      url: 'https://codility.zoom.us/j/89404747101?pwd=7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
+      password: '7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
+      customerDomain: 'codility',
+    },
+  });
+  expect(botCall.status).toEqual('MARKED_FOR_SCHEDULE');
+});
+
+test('should not create a BotCall when its already scheduled', async () => {
+  const { membershipId } = await defaultUserAndOrg();
+  const start = dayjs().add(90, 'second');
+  const end = dayjs().add(30, 'minute');
+
+  expect(await prisma.botCall.count()).toEqual(0);
+
+  const customerCallWithBotCall = await prisma.customerCall.create({
+    data: {
+      eventId: '123',
+      provider: CustomerCallProvider.ZOOM,
+      organizerId: membershipId,
+      scheduledAt: start.toISOString(),
+      scheduledEndAt: end.toISOString(),
+      timezone: 'Europe/Warsaw',
+      data: {
         zoom: {
           id: '89404747101',
           url: 'https://codility.zoom.us/j/89404747101?pwd=7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
           password: '7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
           customerDomain: 'codility',
         },
-      }
-  );
-  expect(botCall.status).toEqual('MARKED_FOR_SCHEDULE');
+      },
+    },
+  });
+  const customerCall = await prisma.customerCall.create({
+    data: {
+      eventId: '456',
+      provider: CustomerCallProvider.ZOOM,
+      organizerId: membershipId,
+      scheduledAt: start.toISOString(),
+      scheduledEndAt: end.toISOString(),
+      timezone: 'Europe/Warsaw',
+      data: {
+        zoom: {
+          id: '89404747101',
+          url: 'https://codility.zoom.us/j/89404747101?pwd=7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
+          password: '7QoEqiQccaSpHmhUTHCLvmRyjGRhrI.1',
+          customerDomain: 'codility',
+        },
+      },
+    },
+  });
+  await prisma.botCall.create({
+    data: {
+      callId: customerCallWithBotCall.id,
+      data: JSON.stringify(customerCallWithBotCall.data),
+      idempotencyKey: '123',
+      organizer: membershipId,
+      provider: CustomerCallProvider.ZOOM,
+      scheduledAt: customerCallWithBotCall.scheduledAt,
+      scheduledEndAt: customerCallWithBotCall.scheduledEndAt,
+      status: BotCallStatus.MARKED_FOR_SCHEDULE,
+      timezone: customerCallWithBotCall.timezone,
+    },
+  });
+
+  expect(await prisma.customerCall.count()).toEqual(2);
+  expect(await prisma.botCall.count()).toEqual(1);
+
+  const botCalls = await BotCallService.selectAndMarkForSchedule();
+
+  expect(botCalls.length).toEqual(1);
+  expect(botCalls[0].callId).toEqual(customerCall.id);
+
+  expect(await prisma.botCall.count()).toEqual(2);
 });
 
 test('should not mark for schedule calls that are later than 90 seconds ', async () => {
