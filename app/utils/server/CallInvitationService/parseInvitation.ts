@@ -19,6 +19,7 @@ interface InvitationData {
   organizer: string;
   start: string;
   timezone: string;
+  title: string;
   uid: string;
   zoomCall: ZoomCall;
 }
@@ -93,10 +94,11 @@ export function parseInvitation(content: string): InvitationData {
 
   const organizer = parseOrganizer((event.organizer as any)['val']);
 
-  let uid = event.uid;
-  let timezoneId = timezone.tzid;
-  let start = event.start.toISOString();
-  let end = event.end.toISOString();
+  const uid = event.uid;
+  const timezoneId = timezone.tzid;
+  const start = event.start.toISOString();
+  const end = event.end.toISOString();
+  const title = event.summary;
   const { zoomCallId, zoomCallPassword, zoomCustomerDomain } = parseZoomUrl(event.location);
   const zoomCallUrl = event.location;
 
@@ -112,6 +114,7 @@ export function parseInvitation(content: string): InvitationData {
     uid,
     start,
     end,
+    title,
   };
 }
 

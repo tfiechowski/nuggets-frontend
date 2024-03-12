@@ -68,7 +68,7 @@ async function handle(
     const createdUser = await supabaseAdmin.auth.admin.createUser({ email, email_confirm: true });
     const userId = createdUser.data.user?.id as string;
 
-    const invitation = await OrganizationService.inviteUser(userTeam.accountId, userId, role);
+    const invitation = await OrganizationService.inviteUser(userTeam.organizationId, userId, role);
 
     const { id: invitationToken } = invitation;
 
@@ -83,7 +83,7 @@ async function handle(
       return { error: emailResponse.error };
     }
 
-    console.log(`Created an invitation for ${email} to account (${userTeam.accountId})!`);
+    console.log(`Created an invitation for ${email} to account (${userTeam.organizationId})!`);
     return {};
   }
 }

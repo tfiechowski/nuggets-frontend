@@ -128,3 +128,9 @@ test('parse end', () => {
 
   expect(result.end).toBe('2024-02-27T12:30:00.000Z');
 });
+
+test('parse name', () => {
+  const result = parseInvitation(ics);
+
+  expect(result.title).toBe("Tomasz Fiechowski's Zoom Meeting");
+});

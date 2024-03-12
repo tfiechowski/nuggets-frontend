@@ -15,7 +15,7 @@ export type User = {
 export async function getTeamMembers(): Promise<User[]> {
   const userTeam = await getUserOrganization();
   console.log('🚀 ~ getTeamMembers ~ userTeam:', userTeam);
-  const userTeamMembers = await OrganizationService.getOrganizationMembers(userTeam.accountId);
+  const userTeamMembers = await OrganizationService.getOrganizationMembers(userTeam.organizationId);
   console.log('🚀 ~ getTeamMembers ~ userTeamMembers:', userTeamMembers);
 
   return userTeamMembers.map((member) => ({

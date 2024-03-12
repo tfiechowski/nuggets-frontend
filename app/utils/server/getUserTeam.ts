@@ -5,7 +5,7 @@ import { getUserId } from '@/app/utils/server/getUserId';
 import { MembershipRole } from '@prisma/client';
 
 export async function getUserOrganization(): Promise<{
-  accountId: string;
+  organizationId: string;
   role: MembershipRole;
   name: string;
 }> {

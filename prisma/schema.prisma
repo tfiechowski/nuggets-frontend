@@ -82,6 +82,7 @@ model CustomerCall {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  title     String
 
   eventId        String               @unique @map("event_id")
   provider       CustomerCallProvider

@@ -39,7 +39,7 @@ const handleCreateNote = async (competitorName: string): Promise<CompetitorNote>
     .insert({
       content: '# Sample note',
       competitor_name: competitorName,
-      account_id: team.accountId,
+      account_id: team.organizationId,
     })
     .returns<CompetitorNote>();
 

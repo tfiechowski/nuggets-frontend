@@ -30,15 +30,14 @@ export class CallInvitationService {
       // Create new customer call
       await prisma.customerCall.create({
         data: {
+          data: { zoom: { ...invitationData.zoomCall } },
           eventId: invitationData.uid,
           organizerId: membershipId,
           provider: CustomerCallProvider.ZOOM,
           scheduledAt: invitationData.start,
           scheduledEndAt: invitationData.end,
           timezone: invitationData.timezone,
-          data: {
-            zoom: { ...invitationData.zoomCall },
-          },
+          title: invitationData.title,
         },
       });
     } else {
@@ -54,11 +53,27 @@ export class CallInvitationService {
           scheduledAt: invitationData.start,
           scheduledEndAt: invitationData.end,
           timezone: invitationData.timezone,
+          title: invitationData.title,
           data: {
             zoom: { ...invitationData.zoomCall },
           },
         },
       });
     }
+  }
+
+  public static async getCalls(organizationId: string) {
+    return prisma.customerCall.findMany({
+      where: {
+        organizer: {
+          organizationId: {
+            equals: organizationId,
+          },
+        },
+      },
+      orderBy: {
+        scheduledAt: 'desc',
+      },
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { DataTable } from '@/app/app/team/members/MembersTable';
+import { DataTable } from '@/app/app/team/members/DataTable';
 import { UserInviteDialog } from '@/app/app/team/members/UserInviteDialog';
 import { getUserOrganization } from '@/app/utils/server/getUserTeam';
 
@@ -37,11 +37,11 @@ async function getIsTeamOwner() {
 
 export default async function Manage() {
   const userOrganization = await getUserOrganization();
-  const members = await OrganizationService.getOrganizationMembers(userOrganization.accountId);
+  const members = await OrganizationService.getOrganizationMembers(userOrganization.organizationId);
   const isTeamOwner = await getIsTeamOwner();
 
   const invitations = await OrganizationService.getOrganizationInvitations(
-    userOrganization.accountId
+    userOrganization.organizationId
   );
 
   return (

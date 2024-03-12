@@ -47,6 +47,7 @@ test('should mark a call for schedule', async () => {
       scheduledAt: start.toISOString(),
       scheduledEndAt: end.toISOString(),
       timezone: 'Europe/Warsaw',
+      title: 'Da Best Zoom Meet',
       data: {
         zoom: {
           id: '89404747101',
@@ -100,6 +101,7 @@ test('should not create a BotCall when its already scheduled', async () => {
       scheduledAt: start.toISOString(),
       scheduledEndAt: end.toISOString(),
       timezone: 'Europe/Warsaw',
+      title: 'Da Best Zoom Meet',
       data: {
         zoom: {
           id: '89404747101',
@@ -118,6 +120,7 @@ test('should not create a BotCall when its already scheduled', async () => {
       scheduledAt: start.toISOString(),
       scheduledEndAt: end.toISOString(),
       timezone: 'Europe/Warsaw',
+      title: 'Da Best Zoom Meet',
       data: {
         zoom: {
           id: '89404747101',
@@ -168,6 +171,7 @@ test('should not mark for schedule calls that are later than 90 seconds ', async
       scheduledAt: start.toISOString(),
       scheduledEndAt: end.toISOString(),
       timezone: 'Europe/Warsaw',
+      title: 'Da Best Zoom Meet',
       data: {
         zoom: {
           id: '89404747101',
@@ -200,6 +204,7 @@ test('should mark update call statuses', async () => {
       scheduledAt: start.toISOString(),
       scheduledEndAt: end.toISOString(),
       timezone: 'Europe/Warsaw',
+      title: 'Da Best Zoom Meet',
       data: {
         zoom: {
           id: '89404747101',
