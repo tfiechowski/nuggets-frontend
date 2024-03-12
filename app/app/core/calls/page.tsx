@@ -1,5 +1,5 @@
 import { DataTable } from '@/app/app/team/members/DataTable';
-import { CallInvitationService } from '@/app/utils/server/CallInvitationService';
+import { CustomerCallService } from '@/app/utils/server/CustomerCallService';
 import { getUserOrganization } from '@/app/utils/server/getUserTeam';
 
 import { CustomerCall } from '@prisma/client';
@@ -18,7 +18,7 @@ const columns: ColumnDef<CustomerCall>[] = [
 
 export default async function Calls() {
   const userOrganization = await getUserOrganization();
-  const calls = await CallInvitationService.getCalls(userOrganization.organizationId);
+  const calls = await CustomerCallService.getCalls(userOrganization.organizationId);
 
   return (
     <div>
