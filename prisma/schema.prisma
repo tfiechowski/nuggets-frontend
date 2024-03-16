@@ -14,6 +14,7 @@ model Organization {
 
   membership  Membership[]
   invitations OrganizationInvitation[]
+  competitors Competitor[]
 
   @@map(name: "organization")
 }
@@ -120,4 +121,25 @@ model BotCall {
   status BotCallStatus
 
   @@map(name: "bot_calls")
+}
+
+model Competitor {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  name      String   @unique
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  battlecard     Battlecard?
+}
+
+model Battlecard {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  content   String
+
+  competitor   Competitor @relation(fields: [competitorId], references: [id])
+  competitorId String     @unique
 }
