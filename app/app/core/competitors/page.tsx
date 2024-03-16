@@ -2,7 +2,7 @@ import { CreateNewCompetitorNoteDialog } from '@/app/app/core/competitors/Create
 import Editor from '@/app/app/core/competitors/Editor';
 import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
 import { getUserRole } from '@/app/utils/server/getUserRole';
-import { getUserOrganization } from '@/app/utils/server/getUserTeam';
+import { getUserMembership } from '@/app/utils/server/getUserTeam';
 import {
   Accordion,
   AccordionContent,
@@ -15,6 +15,7 @@ import './blocknote-styles.css';
 import { Button } from '@/registry/new-york/ui/button';
 import { DeleteConfirmationDialog } from '@/app/app/core/competitors/DeleteConfirmationDialog';
 import { MembershipRole } from '@prisma/client';
+import { BattlecardsService } from '@/app/utils/server/BattlecardsService';
 
 interface CompetitorNote {
   id: string;
@@ -24,49 +25,50 @@ interface CompetitorNote {
 
 const handleUpdateNote = async (id: string, content: string) => {
   'use server';
-  const supabase = getServerSupabaseClient();
+  const userMembership = await getUserMembership();
 
-  await supabase.from('competitor_notes').update({ content }).eq('id', id);
+  return BattlecardsService.updateContent(userMembership, id, content);
 };
 
 const handleCreateNote = async (competitorName: string): Promise<CompetitorNote> => {
   'use server';
-  const supabase = getServerSupabaseClient();
-  const team = await getUserOrganization();
+  const userMembership = await getUserMembership();
 
-  const { data, error } = await supabase
-    .from('competitor_notes')
-    .insert({
-      content: '# Sample note',
-      competitor_name: competitorName,
-      account_id: team.organizationId,
-    })
-    .returns<CompetitorNote>();
+  const response = await BattlecardsService.createNewCompetitor(userMembership, competitorName);
 
-  if (error) {
-    throw new Error(error.message);
+  // const { data, error } = await supabase
+  //   .from('competitor_notes')
+  //   .insert({
+  //     content: '# Sample note',
+  //     competitor_name: competitorName,
+  //     account_id: userMembership.organization.id,
+  //   })
+  //   .returns<CompetitorNote>();
+
+  if (response.error) {
+    throw new Error(response.error.message);
   }
 
   revalidatePath('/app/core/competitors');
 
-  return data;
+  return response.data;
 };
 
 const handleDeleteNote = async (id: string) => {
   'use server';
-  const supabase = getServerSupabaseClient();
-  const user = await supabase.auth.getUser();
+  const userMembership = await getUserMembership();
+  await BattlecardsService.delete(userMembership, id);
 
-  await supabase.from('competitor_notes').delete().eq('id', id);
-
-  console.log(`Note ${id} deleted by user: ${user.data.user?.email}`);
+  console.log(`Note ${id} deleted by user: ${userMembership.userId}`);
 
   revalidatePath('/app/core/competitors');
 };
 
 export default async function App() {
   const competitiveNotes = getServerSupabaseClient();
-  const userRole = await getUserRole();
+  const userMembership = await getUserMembership();
+  const battlecards = await BattlecardsService.listBattlecards(userMembership);
+
   const { data } = await competitiveNotes.from('competitor_notes').select('*').order('created_at');
 
   return (
@@ -75,7 +77,7 @@ export default async function App() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Your battle cards</h2>
         </div>
-        {userRole === MembershipRole.OWNER && (
+        {userMembership.role === MembershipRole.OWNER && (
           <div className="flex  items-center space-x-2">
             <CreateNewCompetitorNoteDialog onCreate={handleCreateNote} />
           </div>
@@ -83,20 +85,20 @@ export default async function App() {
       </div>
 
       <Accordion type="single" collapsible>
-        {data?.map((competitorNote) => (
+        {battlecards?.map((battlecard) => (
           <div className="p-2">
-            <AccordionItem value={competitorNote.id}>
-              <AccordionTrigger>{competitorNote.competitor_name}</AccordionTrigger>
+            <AccordionItem value={battlecard.id}>
+              <AccordionTrigger>{battlecard.competitor.name}</AccordionTrigger>
               <AccordionContent>
                 <div className="flex items-center justify-between space-y-2">
                   <div>Note:</div>
-                  <DeleteConfirmationDialog id={competitorNote.id} onDelete={handleDeleteNote} />
+                  <DeleteConfirmationDialog id={battlecard.id} onDelete={handleDeleteNote} />
                 </div>
 
                 <Editor
-                  editable={userRole === MembershipRole.OWNER}
-                  initialContent={competitorNote.content}
-                  noteId={competitorNote.id}
+                  editable={userMembership.role === MembershipRole.OWNER}
+                  initialContent={battlecard.content}
+                  noteId={battlecard.id}
                   onUpdate={handleUpdateNote}
                 />
               </AccordionContent>

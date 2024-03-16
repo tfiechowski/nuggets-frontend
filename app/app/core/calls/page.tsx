@@ -1,6 +1,6 @@
 import { DataTable } from '@/app/app/team/members/DataTable';
 import { CustomerCallService } from '@/app/utils/server/CustomerCallService';
-import { getUserOrganization } from '@/app/utils/server/getUserTeam';
+import { getUserMembership } from '@/app/utils/server/getUserTeam';
 
 import { CustomerCall } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
@@ -17,8 +17,8 @@ const columns: ColumnDef<CustomerCall>[] = [
 ];
 
 export default async function Calls() {
-  const userOrganization = await getUserOrganization();
-  const calls = await CustomerCallService.getCalls(userOrganization.organizationId);
+  const userMembership = await getUserMembership();
+  const calls = await CustomerCallService.getCalls(userMembership.organization.id);
 
   return (
     <div>

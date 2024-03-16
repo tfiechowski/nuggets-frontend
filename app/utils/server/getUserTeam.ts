@@ -4,11 +4,14 @@ import { prisma } from '@/lib/db';
 import { getUserId } from '@/app/utils/server/getUserId';
 import { MembershipRole } from '@prisma/client';
 
-export async function getUserOrganization(): Promise<{
-  organizationId: string;
+export interface UserMembership {
+  organization: { id: string };
   role: MembershipRole;
-  name: string;
-}> {
+  team: { id: string; name: string };
+  userId: string;
+}
+
+export async function getUserMembership(): Promise<UserMembership> {
   // TODO: move this to repo/service method?
   const userId = await getUserId();
 
@@ -36,6 +39,11 @@ export async function getUserOrganization(): Promise<{
   }
   // Redirect here?
 
-  const res = result.map((t) => ({ accountId: t.id, role: t.role, name: t.name }))[0];
+  const res = result.map((t) => ({
+    userId,
+    organization: { id: t.id },
+    role: t.role,
+    team: { id: t.id, name: t.name },
+  }))[0];
   return res;
 }

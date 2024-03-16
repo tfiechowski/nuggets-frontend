@@ -1,17 +1,16 @@
 import { DEFAULT_URL } from '@/app/utils/config';
 import { sendEmail } from '@/app/utils/email/sendEmail';
 import { OrganizationService } from '@/app/utils/server/OrganizationService';
+import { UserService } from '@/app/utils/server/UserService';
 import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
 import { getTeamMembers } from '@/app/utils/server/getTeamMembers';
-import { getUserOrganization } from '@/app/utils/server/getUserTeam';
+import { getUserMembership } from '@/app/utils/server/getUserTeam';
 import { FunctionalValidator, IFunctionalRuleValidator } from '@/lib/validator';
+import { MembershipRole } from '@prisma/client';
 import { SupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { createServerClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { ZodError, z } from 'zod';
-import { MembershipRole } from '@prisma/client';
-import { UserService } from '@/app/utils/server/UserService';
 
 interface RequestBody {
   email: string;
@@ -32,9 +31,11 @@ const validateNotTeamMemberAlready: IFunctionalRuleValidator = (email: string) =
 };
 
 const validateCanInviteUsers: IFunctionalRuleValidator = () => async () => {
-  const userTeam = await getUserOrganization();
+  const userMembership = await getUserMembership();
 
-  return userTeam.role === MembershipRole.OWNER ? {} : { error: "You don't have permissions" };
+  return userMembership.role === MembershipRole.OWNER
+    ? {}
+    : { error: "You don't have permissions" };
 };
 
 async function handle(
@@ -55,7 +56,7 @@ async function handle(
     return validationError;
   }
 
-  const userTeam = await getUserOrganization();
+  const userMembership = await getUserMembership();
 
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL as any,
@@ -68,14 +69,18 @@ async function handle(
     const createdUser = await supabaseAdmin.auth.admin.createUser({ email, email_confirm: true });
     const userId = createdUser.data.user?.id as string;
 
-    const invitation = await OrganizationService.inviteUser(userTeam.organizationId, userId, role);
+    const invitation = await OrganizationService.inviteUser(
+      userMembership.organization.id,
+      userId,
+      role
+    );
 
     const { id: invitationToken } = invitation;
 
     const emailResponse = await sendEmail({
       to: email,
-      subject: `Nuggets - You've been invited to join ${userTeam.name}`,
-      html: `<a href="${DEFAULT_URL}/auth/accept-invitation?invitationToken=${invitationToken}&company=${userTeam.name}&email=${email}">Join!</a>`,
+      subject: `Nuggets - You've been invited to join ${userMembership.team.name}`,
+      html: `<a href="${DEFAULT_URL}/auth/accept-invitation?invitationToken=${invitationToken}&company=${userMembership.team.name}&email=${email}">Join!</a>`,
     });
 
     if (emailResponse.error) {
@@ -83,7 +88,9 @@ async function handle(
       return { error: emailResponse.error };
     }
 
-    console.log(`Created an invitation for ${email} to account (${userTeam.organizationId})!`);
+    console.log(
+      `Created an invitation for ${email} to account (${userMembership.organization.id})!`
+    );
     return {};
   }
 }

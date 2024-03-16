@@ -18,7 +18,7 @@ export class OrganizationService {
   }
 
   public static async getOrganizationMembers(organizationId: string) {
-    return prisma.user.findMany({
+    const users = await prisma.user.findMany({
       where: {
         memberships: {
           every: {
@@ -33,6 +33,13 @@ export class OrganizationService {
         name: true,
       },
     });
+
+    return users.map((user) => ({
+      ...user,
+      memberships: undefined,
+      role: user.memberships.find((membership) => membership.organizationId === organizationId)
+        ?.role as MembershipRole,
+    }));
   }
 
   public static async getOrganizationInvitations(organizationId: string) {

@@ -1,6 +1,6 @@
 import { DataTable } from '@/app/app/team/members/DataTable';
 import { UserInviteDialog } from '@/app/app/team/members/UserInviteDialog';
-import { getUserOrganization } from '@/app/utils/server/getUserTeam';
+import { getUserMembership } from '@/app/utils/server/getUserTeam';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { OrganizationService } from '@/app/utils/server/OrganizationService';
@@ -9,7 +9,7 @@ import { MembershipRole } from '@prisma/client';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type User = {
-  name: string;
+  name: string | null;
   email: string;
   role: MembershipRole;
 };
@@ -30,18 +30,20 @@ const columns: ColumnDef<User>[] = [
 ];
 
 async function getIsTeamOwner() {
-  const team = await getUserOrganization();
+  const userMembership = await getUserMembership();
 
-  return team.role === MembershipRole.OWNER;
+  return userMembership.role === MembershipRole.OWNER;
 }
 
 export default async function Manage() {
-  const userOrganization = await getUserOrganization();
-  const members = await OrganizationService.getOrganizationMembers(userOrganization.organizationId);
+  const userOrganization = await getUserMembership();
+  const members = await OrganizationService.getOrganizationMembers(
+    userOrganization.organization.id
+  );
   const isTeamOwner = await getIsTeamOwner();
 
   const invitations = await OrganizationService.getOrganizationInvitations(
-    userOrganization.organizationId
+    userOrganization.organization.id
   );
 
   return (
