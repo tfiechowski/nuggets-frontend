@@ -36,15 +36,6 @@ const handleCreateNote = async (competitorName: string): Promise<CompetitorNote>
 
   const response = await BattlecardsService.createNewCompetitor(userMembership, competitorName);
 
-  // const { data, error } = await supabase
-  //   .from('competitor_notes')
-  //   .insert({
-  //     content: '# Sample note',
-  //     competitor_name: competitorName,
-  //     account_id: userMembership.organization.id,
-  //   })
-  //   .returns<CompetitorNote>();
-
   if (response.error) {
     throw new Error(response.error.message);
   }

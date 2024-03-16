@@ -5,6 +5,12 @@ import '@blocknote/react/style.css';
 import { useDebounceCallback } from 'usehooks-ts';
 import './blocknote-styles.css';
 
+const defaultDomAttributes = {
+  blockContainer: {
+    class: 'block-container',
+  },
+};
+
 export default function Editor({
   initialContent,
   editable,
@@ -29,12 +35,26 @@ export default function Editor({
       editor.tryParseMarkdownToBlocks;
     },
     domAttributes: {
-      blockContainer: {
-        class: 'block-container',
-      },
+      ...defaultDomAttributes,
     },
     defaultStyles: false,
     editable,
+  });
+
+  return <BlockNoteView editor={editor} />;
+}
+
+export function ReadOnlyEditor({ initialContent }: { initialContent: string }) {
+  const editor = useBlockNote({
+    onEditorReady: async (editor) => {
+      const blocks = await editor.tryParseMarkdownToBlocks(initialContent);
+      editor.replaceBlocks(editor.topLevelBlocks, blocks);
+    },
+    domAttributes: {
+      ...defaultDomAttributes,
+    },
+    editable: false,
+    defaultStyles: false,
   });
 
   return <BlockNoteView editor={editor} />;
