@@ -4,6 +4,8 @@ import { BattlecardsService } from '@/app/utils/server/BattlecardsService';
 import { CallNoteService } from '@/app/utils/server/CallNoteService';
 import { UnauthorizedError } from '@/app/utils/server/errors';
 import { getUserMembership } from '@/app/utils/server/getUserTeam';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { prisma } from '@/lib/db';
 
 const handleUpdateNote = async (id: string, content: string) => {
@@ -33,10 +35,19 @@ export default async function Page({ params }: { params: { callId: string } }) {
     const note = await CallNoteService.getByCustomerCallId(call.id);
 
     return (
-      <div>
-        <Battlecards battlecards={battlecards} call={call} />
-
-        <Note note={note} onUpdate={handleUpdateNote} />
+      <div className="h-screen xddd">
+        <Tabs defaultValue="account" className="w-[600px] h-full flex flex-col">
+          <TabsContent value="battlecards" className="flex-1">
+            <Battlecards battlecards={battlecards} call={call} />
+          </TabsContent>
+          <TabsContent value="notes" className="flex-1">
+            <Note note={note} onUpdate={handleUpdateNote} />
+          </TabsContent>
+          <TabsList className="grid w-full grid-cols-2 flex-none">
+            <TabsTrigger value="battlecards">Battlecards</TabsTrigger>
+            <TabsTrigger value="notes">Notes</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
     );
   } catch (error) {
