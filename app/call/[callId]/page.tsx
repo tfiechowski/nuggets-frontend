@@ -36,11 +36,11 @@ export default async function Page({ params }: { params: { callId: string } }) {
 
     return (
       <div className="h-screen xddd">
-        <Tabs defaultValue="account" className="w-[600px] h-full flex flex-col">
-          <TabsContent value="battlecards" className="flex-1">
+        <Tabs defaultValue="battlecards" className="w-[600px] h-full flex flex-col">
+          <TabsContent value="battlecards" className="flex-1 overflow-y-scroll">
             <Battlecards battlecards={battlecards} call={call} />
           </TabsContent>
-          <TabsContent value="notes" className="flex-1">
+          <TabsContent value="notes" className="flex-1 overflow-y-scroll">
             <Note note={note} onUpdate={handleUpdateNote} />
           </TabsContent>
           <TabsList className="grid w-full grid-cols-2 flex-none">
