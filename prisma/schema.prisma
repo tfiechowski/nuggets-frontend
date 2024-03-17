@@ -143,6 +143,8 @@ model Competitor {
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
   battlecard     Battlecard?
+
+  @@map(name: "competitors")
 }
 
 model Battlecard {
@@ -153,4 +155,6 @@ model Battlecard {
 
   competitor   Competitor @relation(fields: [competitorId], references: [id])
   competitorId String     @unique
+
+  @@map(name: "battlecards")
 }
