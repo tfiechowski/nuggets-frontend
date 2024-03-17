@@ -93,8 +93,19 @@ model CustomerCall {
   data           Json
   organizer      Membership           @relation(fields: [organizerId], references: [id])
   organizerId    String
+  note           CallNote?
 
   @@map(name: "customer_calls")
+}
+
+model CallNote {
+  id      String @id @default(uuid())
+  content String
+
+  customerCall   CustomerCall @relation(fields: [customerCallId], references: [id])
+  customerCallId String       @unique
+
+  @@map(name: "customer_call_note")
 }
 
 enum BotCallStatus {
