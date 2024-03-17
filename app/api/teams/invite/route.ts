@@ -2,12 +2,10 @@ import { DEFAULT_URL } from '@/app/utils/config';
 import { sendEmail } from '@/app/utils/email/sendEmail';
 import { OrganizationService } from '@/app/utils/server/OrganizationService';
 import { UserService } from '@/app/utils/server/UserService';
-import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
 import { getTeamMembers } from '@/app/utils/server/getTeamMembers';
 import { getUserMembership } from '@/app/utils/server/getUserTeam';
 import { FunctionalValidator, IFunctionalRuleValidator } from '@/lib/validator';
 import { MembershipRole } from '@prisma/client';
-import { SupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { ZodError, z } from 'zod';
@@ -38,10 +36,7 @@ const validateCanInviteUsers: IFunctionalRuleValidator = () => async () => {
     : { error: "You don't have permissions" };
 };
 
-async function handle(
-  supabase: SupabaseClient,
-  body: RequestBody
-): Promise<{ data?: any; error?: any }> {
+async function handle(body: RequestBody): Promise<{ data?: any; error?: any }> {
   const { email, role } = body;
 
   const functionalValidator = new FunctionalValidator([
@@ -99,9 +94,7 @@ export async function POST(request: Request) {
   try {
     const body = RequestBody.parse(await request.json());
 
-    const supabase = getServerSupabaseClient();
-
-    const { data, error } = await handle(supabase, body);
+    const { data, error } = await handle(body);
 
     if (error) {
       return NextResponse.json({ error });

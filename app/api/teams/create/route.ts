@@ -1,15 +1,6 @@
 import { OrganizationService } from '@/app/utils/server/OrganizationService';
-import {
-  FunctionalValidator,
-  IRuleValidator,
-  IFunctionalRuleValidator,
-  RuleValidator,
-  Validator,
-} from '@/lib/validator';
-import { createClient } from '@/utils/supabase/server';
-import { SupabaseClient, createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { cookies } from 'next/headers';
+import { getUserId } from '@/app/utils/server/getUserId';
+import { FunctionalValidator, IFunctionalRuleValidator } from '@/lib/validator';
 import { NextResponse } from 'next/server';
 import { ZodError, z } from 'zod';
 
@@ -60,11 +51,7 @@ export async function POST(request: Request) {
   try {
     const body = RequestBody.parse(await request.json());
 
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-    const user = await supabase.auth.getUser();
-
-    const userId = user.data.user?.id;
+    const userId = await getUserId();
 
     if (userId === undefined) {
       return NextResponse.json({ error: 'Invalid user session' });
