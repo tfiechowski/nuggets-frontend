@@ -1,12 +1,36 @@
-import ConnectSupabaseSteps from '@/components/ConnectSupabaseSteps';
-import Header from '@/components/Header';
-import SignUpUserSteps from '@/components/SignUpUserSteps';
+import Benefits from '@/components/landing/Benefits';
+import Footer from '@/components/landing/Footer';
+import Hero from '@/components/landing/Hero';
+import Navbar from '@/components/landing/Navbar';
+import SectionTitle from '@/components/landing/SectionTitle';
 import { createClient } from '@/utils/supabase/server';
+import Head from 'next/head';
 import { cookies } from 'next/headers';
-import AuthButton from '../components/AuthButton';
-import DeployButton from '../components/DeployButton';
 
 // import { useAccounts} from "@usebasejump/next";
+
+const benefitOne = {
+  title: 'How Nuggets can help you?',
+  // desc: "You can use this space to highlight your first benefit or a feature of your product. It can also contain an image or Illustration like in the example along with some bullet points.",
+  image: '/public/images/nuggets-logo.png',
+  bullets: [
+    {
+      title: 'Agenda Tracking',
+      desc: 'No more short/long disovery, endless demo monologue and forgotten next steps',
+      // icon: <CheckCircleIcon />
+    },
+    {
+      title: 'Follow up-scheduler',
+      desc: 'Easily schedule a follow-up meting post every call with an integrated time-zone manager',
+      // icon: <CursorClickIcon />
+    },
+    {
+      title: 'Battle Cards',
+      desc: 'Win more deals agains competition by laying the perfect trap.',
+      // icon: <ChartSquareBarIcon />
+    },
+  ],
+};
 
 export default async function Index() {
   const cookieStore = cookies();
@@ -25,35 +49,16 @@ export default async function Index() {
   const isSupabaseConnected = canInitSupabaseClient();
 
   return (
-    <div className="flex-1 w-full flex flex-col gap-20 items-center">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-        <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
-          <DeployButton />
-          {isSupabaseConnected && <AuthButton />}
-        </div>
-      </nav>
+    <>
+      <Navbar />
 
-      <div className="animate-in flex-1 flex flex-col gap-20 opacity-100 max-w-4xl px-3">
-        <Header />
-        <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-4xl mb-4">Next steps</h2>
-          {isSupabaseConnected ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-        </main>
-      </div>
-
-      <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
-        <p>
-          Powered by{' '}
-          <a
-            href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-            target="_blank"
-            className="font-bold hover:underline"
-            rel="noreferrer"
-          >
-            Supabase
-          </a>
-        </p>
-      </footer>
-    </div>
+      <Hero />
+      <SectionTitle
+        pretitle="Nuggets Benefits"
+        title="Increase your win rate by 20% with Nuggets AI Sales Assistant"
+      />
+      <Benefits data={benefitOne} />
+      <Footer />
+    </>
   );
 }
