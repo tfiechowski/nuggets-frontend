@@ -11,7 +11,7 @@ import { cookies } from 'next/headers';
 // import { useAccounts} from "@usebasejump/next";
 
 const benefitOne = {
-  title: 'How Nuggets can help you?',
+  title: 'How can Nuggets help you?',
   // desc: "You can use this space to highlight your first benefit or a feature of your product. It can also contain an image or Illustration like in the example along with some bullet points.",
   image: '/public/images/nuggets-logo.png',
   bullets: [

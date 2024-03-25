@@ -47,7 +47,7 @@ export default function Footer() {
             <div className="flex flex-wrap w-full -mt-2 -ml-3 lg:ml-0">
               {navigation.map((item, index) => (
                 <Link key={index} href={item.link} legacyBehavior>
-                  <a className="w-full px-4 py-2 text-gray-500 rounded-md dark:text-gray-300 hover:text-red-600 focus:text-red-600 focus:bg-red-100 focus:outline-none dark:focus:bg-trueGray-700">
+                  <a className="w-full px-4 py-2 text-gray-500 rounded-md dark:text-gray-300 hover:text-brand-pink focus:text-brand-pink focus:bg-red-100 focus:outline-none dark:focus:bg-trueGray-700">
                     {item.title}
                   </a>
                 </Link>
@@ -58,7 +58,7 @@ export default function Footer() {
             <div className="flex flex-wrap w-full -mt-2 -ml-3 lg:ml-0">
               {legal.map((item, index) => (
                 <Link key={index} href={item.link} legacyBehavior>
-                  <a className="w-full px-4 py-2 text-gray-500 rounded-md dark:text-gray-300 hover:text-red-600 focus:text-red-600 focus:bg-red-100 focus:outline-none dark:focus:bg-trueGray-700">
+                  <a className="w-full px-4 py-2 text-gray-500 rounded-md dark:text-gray-300 hover:text-brand-pink focus:text-brand-pink focus:bg-red-100 focus:outline-none dark:focus:bg-trueGray-700">
                     {item.title}
                   </a>
                 </Link>

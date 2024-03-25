@@ -22,6 +22,7 @@ const config = {
         bitter: ['var(--font-bitter)'],
       },
       colors: {
+        'brand-pink': '#EB496D',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

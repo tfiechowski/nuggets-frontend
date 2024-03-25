@@ -19,7 +19,7 @@ export default function Hero() {
               <a
                 href="/signup"
                 rel="noopener"
-                className="px-8 py-4 text-lg font-medium text-center text-white bg-red-600 rounded-md "
+                className="px-8 py-4 text-lg font-medium text-center text-white bg-brand-pink rounded-md "
               >
                 Start your free trial
               </a>
