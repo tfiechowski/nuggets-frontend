@@ -33,7 +33,7 @@ export default function Login({
     console.log('🚀 ~ signUp ~ data, error:', data, error);
 
     if (error) {
-      return redirect('/login?message=Could not authenticate user');
+      return redirect('/signup?message=Error happened');
     }
 
     return redirect('/login?message=Check email to continue sign in process');
