@@ -1,6 +1,7 @@
 'use client';
 
 import { useOpenWindow } from '@/app/popup/useOpenWindow';
+import { DEFAULT_URL } from '@/app/utils/config';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -48,9 +49,7 @@ const columns: ColumnDef<CCall>[] = [
     header: 'Assistant',
     cell: (props) => (
       <div>
-        <AssistantOpener
-          link={`http://localhost:3000/call/${props.row.original.id}`}
-        ></AssistantOpener>
+        <AssistantOpener link={`${DEFAULT_URL}/call/${props.row.original.id}`}></AssistantOpener>
       </div>
     ),
   }),
