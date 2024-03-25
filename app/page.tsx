@@ -1,4 +1,5 @@
 import Benefits from '@/components/landing/Benefits';
+import { BetaSignup } from '@/components/landing/BetaSignup';
 import Footer from '@/components/landing/Footer';
 import Hero from '@/components/landing/Hero';
 import Navbar from '@/components/landing/Navbar';
@@ -58,6 +59,9 @@ export default async function Index() {
         title="Increase your win rate by 20% with Nuggets AI Sales Assistant"
       />
       <Benefits data={benefitOne} />
+
+      <BetaSignup />
+
       <Footer />
     </>
   );

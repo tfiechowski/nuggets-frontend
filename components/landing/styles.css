@@ -1,3 +1,18 @@
 .title-font {
   font-family: 'Bitter', serif;
 }
+
+.landing-dark-background {
+  background: #223141;
+}
+
+#mc_embed_signup {
+  background: #223141 !important;
+  color: white;
+}
+
+.landing-accent-button {
+  background: #e71c4f !important;
+  font-weight: bold;
+  color: white;
+}
