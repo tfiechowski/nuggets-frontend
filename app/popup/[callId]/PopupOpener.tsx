@@ -1,34 +1,22 @@
 'use client';
 
+import { useOpenWindow } from '@/app/popup/useOpenWindow';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-function openWindow(link: string): ReturnType<typeof window.open> {
-  const { width, height } = window.screen;
-
-  const newWindowWidth = width > 1280 ? 600 : 400;
-
-  return window.open(
-    link,
-    'nuggets',
-    `width=${newWindowWidth},height=${height},screenX=0,left=0,screenY=0,top=0,status=no,menubar=no`
-  );
-}
-
 export function PopupOpener({ link }: { link: string }) {
   const [error, setError] = useState<string | null>(null);
 
+  const openWindow = useOpenWindow();
+
   useEffect(() => {
-    const windowHandle = openWindow(link);
+    const { error } = openWindow(link, true);
 
-    if (windowHandle === null) {
-      setError(JSON.stringify(windowHandle));
-      return;
+    if (error) {
+      setError(error);
     }
-
-    window.close();
   }, []);
 
   if (error) {
