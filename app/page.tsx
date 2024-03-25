@@ -54,10 +54,7 @@ export default async function Index() {
       <Navbar />
 
       <Hero />
-      <SectionTitle
-        pretitle="Nuggets Benefits"
-        title="Increase your win rate by 20% with Nuggets AI Sales Assistant"
-      />
+
       <Benefits data={benefitOne} />
 
       <BetaSignup />
