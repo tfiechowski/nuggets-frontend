@@ -1,20 +1,6 @@
-import { DataTable } from '@/app/app/team/members/DataTable';
+import { CallsTable } from '@/app/app/core/calls/Table';
 import { CustomerCallService } from '@/app/utils/server/CustomerCallService';
 import { getUserMembership } from '@/app/utils/server/getUserTeam';
-
-import { CustomerCall } from '@prisma/client';
-import { ColumnDef } from '@tanstack/react-table';
-
-const columns: ColumnDef<CustomerCall>[] = [
-  {
-    accessorKey: 'title',
-    header: 'Title',
-  },
-  {
-    accessorKey: 'scheduledAt',
-    header: 'Date',
-  },
-];
 
 export default async function Calls() {
   const userMembership = await getUserMembership();
@@ -27,7 +13,7 @@ export default async function Calls() {
       </div>
 
       <div className="py-8">
-        <DataTable columns={columns} data={calls} />
+        <CallsTable data={calls} />
       </div>
     </div>
   );
