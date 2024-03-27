@@ -1,4 +1,4 @@
-import { DEFAULT_URL } from '@/app/utils/config';
+import { NEXT_PUBLIC_DEFAULT_URL } from '@/app/utils/config';
 import { sendEmail } from '@/app/utils/email/sendEmail';
 import { OrganizationService } from '@/app/utils/server/OrganizationService';
 import { UserService } from '@/app/utils/server/UserService';
@@ -75,7 +75,7 @@ async function handle(body: RequestBody): Promise<{ data?: any; error?: any }> {
     const emailResponse = await sendEmail({
       to: email,
       subject: `Nuggets - You've been invited to join ${userMembership.team.name}`,
-      html: `<a href="${DEFAULT_URL}/auth/accept-invitation?invitationToken=${invitationToken}&company=${userMembership.team.name}&email=${email}">Join!</a>`,
+      html: `<a href="${NEXT_PUBLIC_DEFAULT_URL}/auth/accept-invitation?invitationToken=${invitationToken}&company=${userMembership.team.name}&email=${email}">Join!</a>`,
     });
 
     if (emailResponse.error) {

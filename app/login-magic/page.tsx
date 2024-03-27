@@ -1,4 +1,4 @@
-import { DEFAULT_URL } from '@/app/utils/config';
+import { NEXT_PUBLIC_DEFAULT_URL } from '@/app/utils/config';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
@@ -12,7 +12,7 @@ export default function Login({ searchParams }: { searchParams: { message: strin
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
-    const url = `${DEFAULT_URL}/auth/callback`;
+    const url = `${NEXT_PUBLIC_DEFAULT_URL}/auth/callback`;
 
     console.log('🚀 ~ signInMagicLink ~ url:', url);
     const { error } = await supabase.auth.signInWithOtp({

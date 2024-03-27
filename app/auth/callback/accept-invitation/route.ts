@@ -1,14 +1,14 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { type CookieOptions, createServerClient } from '@supabase/ssr';
-import { DEFAULT_URL } from '@/app/utils/config';
+import { NEXT_PUBLIC_DEFAULT_URL } from '@/app/utils/config';
 import { prisma } from '@/lib/db';
 import { OrganizationService } from '@/app/utils/server/OrganizationService';
 
 export async function GET(request: Request) {
   console.log('🚀 ~ /auth/invitation/accept ~ GET:');
   const { searchParams, origin } = new URL(request.url);
-  console.log('🚀 ~ GET ~ origin:', origin, ' DEFAULT_URL:', DEFAULT_URL);
+  console.log('🚀 ~ GET ~ origin:', origin, ' NEXT_PUBLIC_DEFAULT_URL:', NEXT_PUBLIC_DEFAULT_URL);
   console.log('🚀 ~ GET ~ searchParams:', searchParams);
 
   const code = searchParams.get('code');
@@ -18,7 +18,9 @@ export async function GET(request: Request) {
 
   // TODO: no invitation token - no honey, throw an error here
   if (invitationToken === null) {
-    return NextResponse.redirect(`${DEFAULT_URL}/auth/auth-code-error?reason=no-invitation-token`);
+    return NextResponse.redirect(
+      `${NEXT_PUBLIC_DEFAULT_URL}/auth/auth-code-error?reason=no-invitation-token`
+    );
   }
 
   if (code) {
@@ -43,7 +45,7 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {
-      return NextResponse.redirect(`${DEFAULT_URL}/auth/auth-code-error`);
+      return NextResponse.redirect(`${NEXT_PUBLIC_DEFAULT_URL}/auth/auth-code-error`);
     }
 
     await OrganizationService.acceptInvite(invitationToken);
@@ -52,9 +54,9 @@ export async function GET(request: Request) {
 
     console.log('Invitation accept user:', user);
 
-    const url = `${DEFAULT_URL}${next}`;
+    const url = `${NEXT_PUBLIC_DEFAULT_URL}${next}`;
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.redirect(`${DEFAULT_URL}/auth/auth-code-error`);
+  return NextResponse.redirect(`${NEXT_PUBLIC_DEFAULT_URL}/auth/auth-code-error`);
 }

@@ -1,6 +1,6 @@
 'use server';
 
-import { DEFAULT_URL } from '@/app/utils/config';
+import { NEXT_PUBLIC_DEFAULT_URL } from '@/app/utils/config';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 
@@ -10,7 +10,7 @@ export const signInOtp = async (formData: FormData) => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const url = `${DEFAULT_URL}/auth/callback/accept-invitation?invitationToken=${invitationToken}`;
+  const url = `${NEXT_PUBLIC_DEFAULT_URL}/auth/callback/accept-invitation?invitationToken=${invitationToken}`;
   console.log('🚀 accept-invitation ~ signInOtp ~ url:', url);
 
   const { data, error } = await supabase.auth.signInWithOtp({
