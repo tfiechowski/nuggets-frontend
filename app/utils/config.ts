@@ -1,4 +1,4 @@
-export const DEFAULT_FROM_EMAIL = 'tomasz@breezeflow.eu';
+export const DEFAULT_FROM_EMAIL = 'tomasz@getnuggets.io';
 
 export function getEnvKey(key: string): string {
   const value = process.env[key];

@@ -4,7 +4,7 @@ async function signInWithEmail() {
   const supabase = getServerSupabaseClient();
 
   const { data, error } = await supabase.auth.signInWithOtp({
-    email: 'test-1@breezeflow.eu',
+    email: 'tomasz@getnuggets.io',
     options: {
       // set this to false if you do not want the user to be automatically signed up
       shouldCreateUser: true,
