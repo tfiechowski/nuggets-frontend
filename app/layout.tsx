@@ -4,15 +4,12 @@ import { Providers } from '@/app/providers';
 import Head from 'next/head';
 
 import { Bitter } from 'next/font/google';
+import { NEXT_PUBLIC_DEFAULT_URL } from '@/app/utils/config';
 
 const bitter = Bitter({ subsets: ['latin'], variable: '--font-bitter' });
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://127.0.0.1:3000';
-
 export const metadata = {
-  metadataBase: new URL(defaultUrl),
+  metadataBase: new URL(NEXT_PUBLIC_DEFAULT_URL),
   title: 'Nuggets - boost your win rate with Nuggets',
   description: 'Nuggets is your Sales Assistant',
   cardImage: '/og.png',
