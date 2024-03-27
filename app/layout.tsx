@@ -13,7 +13,7 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: 'Nuggets - boos your win rate with Nuggets',
+  title: 'Nuggets - boost your win rate with Nuggets',
   description: 'Nuggets is your Sales Assistant',
   cardImage: '/og.png',
 };
