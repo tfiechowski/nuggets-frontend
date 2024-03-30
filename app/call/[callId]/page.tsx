@@ -35,7 +35,7 @@ export default async function Page({ params }: { params: { callId: string } }) {
     const note = await CallNoteService.getByCustomerCallId(call.id);
 
     return (
-      <div className="h-screen xddd">
+      <div className="h-screen">
         <Tabs defaultValue="battlecards" className="w-[440px] h-full flex flex-col">
           <TabsContent value="battlecards" className="flex-1 overflow-y-scroll">
             <Battlecards battlecards={battlecards} call={call} />

@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
 function openWindow(link: string): ReturnType<typeof window.open> {
-  const { width, height } = window.screen;
+  const { height } = window.screen;
 
-  const newWindowWidth = width > 1280 ? 600 : 400;
+  const newWindowWidth = 440;
 
   return window.open(
     link,
