@@ -20,12 +20,14 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { get } from 'lodash';
 import Link from 'next/link';
 
 type CCall = {
   id: string;
   title: string;
   scheduledAt: string;
+  data: any;
 };
 
 const columnHelper = createColumnHelper<CCall>();
@@ -46,6 +48,11 @@ const columns: ColumnDef<CCall>[] = [
     accessorKey: 'scheduledAt',
     header: 'Date',
   },
+  columnHelper.display({
+    id: 'customer',
+    header: 'Customer',
+    cell: (props) => <div>{get(props.row.original.data, 'zoom.customerDomain', null)}</div>,
+  }),
   columnHelper.display({
     id: 'open-assistant',
     header: 'Assistant',
