@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { ArrowRightIcon } from '@radix-ui/react-icons';
 
 import {
   ColumnDef,
@@ -19,6 +20,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import Link from 'next/link';
 
 type CCall = {
   id: string;
@@ -55,12 +57,18 @@ const columns: ColumnDef<CCall>[] = [
       </div>
     ),
   }),
+  columnHelper.display({
+    id: 'go-to-details',
+    header: 'Details',
+    cell: (props) => (
+      <div>
+        <Link href={`${NEXT_PUBLIC_DEFAULT_URL}/app/core/calls/${props.row.original.id}`}>
+          <ArrowRightIcon />
+        </Link>
+      </div>
+    ),
+  }),
 ];
-
-interface DataTableProps<TData, TValue> {
-  data: TData[];
-  columns: ColumnDef<CCall, TValue>[];
-}
 
 export function CallsTable({ data }: any) {
   const table = useReactTable({

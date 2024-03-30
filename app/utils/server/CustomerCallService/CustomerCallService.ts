@@ -1,3 +1,4 @@
+import { UserMembership } from '@/app/utils/server/getUserTeam';
 import { prisma } from '@/lib/db';
 
 export class CustomerCallService {
@@ -12,6 +13,17 @@ export class CustomerCallService {
       },
       orderBy: {
         scheduledAt: 'desc',
+      },
+    });
+  }
+
+  public static async getCall(id: string, userMembership: UserMembership) {
+    return prisma.customerCall.findUniqueOrThrow({
+      where: {
+        id: id,
+        organizer: {
+          organizationId: userMembership.organization.id,
+        },
       },
     });
   }

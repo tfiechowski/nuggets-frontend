@@ -63,6 +63,7 @@
   "devDependencies": {
     "@quramy/jest-prisma": "^1.8.0",
     "@types/jest": "^29.5.12",
+    "@types/lodash": "^4.17.0",
     "@types/node": "^20.11.5",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
