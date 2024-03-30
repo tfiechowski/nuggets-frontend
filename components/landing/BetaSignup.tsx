@@ -14,7 +14,7 @@ export function BetaSignup() {
             type="text/css"
             dangerouslySetInnerHTML={{
               __html:
-                '\n        #mc_embed_signup{background:#fff; false;clear:left; font:14px; width: 600px;}\n        /* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.\n           We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */\n',
+                '\n        #mc_embed_signup{background:#fff; false;clear:left; font:14px; width: 440px;}\n        /* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.\n           We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */\n',
             }}
           />
           <div id="mc_embed_signup">
