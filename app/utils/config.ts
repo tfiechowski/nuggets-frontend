@@ -13,8 +13,9 @@ export const ENV_RESEND_API_KEY = process.env.RESEND_API_KEY;
 export const NODE_ENV = process.env.NODE_ENV || 'production';
 
 export const VERCEL_ENV = process.env.VERCEL_ENV || 'production';
+export const PUBLIC_NEXT_VERCEL_ENV = VERCEL_ENV;
 
 export const NEXT_PUBLIC_DEFAULT_URL =
-  VERCEL_ENV === 'production' ? 'https://getnuggets.io' : 'http://localhost:3000';
+  PUBLIC_NEXT_VERCEL_ENV === 'production' ? 'https://getnuggets.io' : 'http://localhost:3000';
 
 export const ENV_RESEND_FORCE_EMAIL = process.env.ENV_RESEND_FORCE_EMAIL;
