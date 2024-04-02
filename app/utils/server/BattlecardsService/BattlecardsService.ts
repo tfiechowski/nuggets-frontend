@@ -42,7 +42,7 @@ export class BattlecardsService {
         },
       },
       orderBy: {
-        createdAt: 'asc'
+        createdAt: 'asc',
       },
       include: {
         competitor: true,
