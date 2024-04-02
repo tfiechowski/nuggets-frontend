@@ -78,7 +78,7 @@ export function BetaSignup() {
                         >
                           <img
                             className="refferal_badge"
-                            src="https://digitalasset.intuit.com/render/content/dam/intuit/mc-fe/en_us/images/intuit-mc-rewards-text-dark.svg"
+                            src="https://digitalasset.intuit.com/render/content/dam/intuit/mc-fe/en_us/images/intuit-mc-rewards-text-light.svg"
                             alt="Intuit Mailchimp"
                             style={{
                               width: 220,
