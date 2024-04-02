@@ -61,7 +61,7 @@ export function BetaSignup() {
                       type="submit"
                       name="subscribe"
                       id="mc-embedded-subscribe"
-                      className="button landing-accent-button"
+                      className="button landing-accent-button font-bold"
                       defaultValue="Subscribe"
                     />
                     <p style={{ margin: '0px auto' }}>

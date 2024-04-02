@@ -3,12 +3,6 @@ import { BetaSignup } from '@/components/landing/BetaSignup';
 import Footer from '@/components/landing/Footer';
 import Hero from '@/components/landing/Hero';
 import Navbar from '@/components/landing/Navbar';
-import SectionTitle from '@/components/landing/SectionTitle';
-import { createClient } from '@/utils/supabase/server';
-import Head from 'next/head';
-import { cookies } from 'next/headers';
-
-// import { useAccounts} from "@usebasejump/next";
 
 const benefitOne = {
   title: 'How can Nuggets help you?',
@@ -34,21 +28,6 @@ const benefitOne = {
 };
 
 export default async function Index() {
-  const cookieStore = cookies();
-
-  const canInitSupabaseClient = () => {
-    // This function is just for the interactive tutorial.
-    // Feel free to remove it once you have Supabase connected.
-    try {
-      createClient(cookieStore);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
-  const isSupabaseConnected = canInitSupabaseClient();
-
   return (
     <>
       <Navbar />

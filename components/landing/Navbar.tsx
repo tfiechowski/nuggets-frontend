@@ -70,7 +70,7 @@ export default function Navbar() {
                       </Link>
                     ))}
                     <Link href="/" legacyBehavior>
-                      <a className="w-full px-6 py-2 mt-3 text-center text-white bg-brand-pink rounded-md lg:ml-5">
+                      <a className="w-full px-6 py-2 mt-3 text-center font-bold text-white bg-brand-pink rounded-md lg:ml-5">
                         Get Started
                       </a>
                     </Link>
@@ -98,7 +98,7 @@ export default function Navbar() {
 
         <div className="hidden mr-3 space-x-4 lg:flex nav__item">
           <Link href="/app" legacyBehavior>
-            <a className="px-6 py-2 text-white bg-brand-pink rounded-md md:ml-5">
+            <a className="px-6 py-2 text-white font-bold bg-brand-pink rounded-md md:ml-5">
               Get started
               {/* TODO: Redirect to usage guide here? */}
             </a>
