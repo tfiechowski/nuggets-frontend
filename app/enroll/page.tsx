@@ -3,7 +3,7 @@ import NavbarInner from '@/components/landing/Navbar';
 
 import { Card, CardContent } from '@/components/ui/card';
 
-export default function Enroll({ children }: { children: React.ReactNode }) {
+export default function Enroll() {
   return (
     <>
       <NavbarInner />
