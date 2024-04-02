@@ -56,11 +56,8 @@ const handleDeleteNote = async (id: string) => {
 };
 
 export default async function App() {
-  const competitiveNotes = getServerSupabaseClient();
   const userMembership = await getUserMembership();
   const battlecards = await BattlecardsService.listBattlecards(userMembership);
-
-  const { data } = await competitiveNotes.from('competitor_notes').select('*').order('created_at');
 
   return (
     <div>
