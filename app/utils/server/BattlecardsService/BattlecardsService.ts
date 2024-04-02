@@ -41,6 +41,9 @@ export class BattlecardsService {
           },
         },
       },
+      orderBy: {
+        createdAt: 'asc'
+      },
       include: {
         competitor: true,
       },
