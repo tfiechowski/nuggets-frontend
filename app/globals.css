@@ -74,3 +74,35 @@
     @apply bg-background text-foreground;
   }
 }
+
+.title-font {
+  font-family: 'Bitter', serif;
+}
+
+.landing-dark-background {
+  background: #223141;
+}
+
+.landing-accent-button {
+  background: #e71c4f !important;
+  font-weight: bold;
+  color: white;
+}
+
+.landing-accent-background {
+  background: #eb496d;
+  color: white;
+}
+
+#mc-embedded-subscribe {
+  font-weight: bold !important;
+}
+
+.beta-signup-dark #mc_embed_signup {
+  background: #223141 !important;
+  color: white;
+}
+
+.beta-signup-dark #mce-EMAIL {
+  color: #223141 !important;
+}

@@ -17,7 +17,7 @@ export default function Hero() {
 
             <div className="flex flex-col items-start space-y-3 sm:space-x-4 sm:space-y-0 sm:items-center sm:flex-row">
               <a
-                href="/signup"
+                href="/enroll"
                 rel="noopener"
                 className="px-8 py-4 text-lg font-bold text-center text-white bg-brand-pink rounded-md "
               >

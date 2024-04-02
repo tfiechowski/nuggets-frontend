@@ -1,8 +1,10 @@
 import Benefits from '@/components/landing/Benefits';
 import { BetaSignup } from '@/components/landing/BetaSignup';
+import Container from '@/components/landing/Container';
 import Footer from '@/components/landing/Footer';
 import Hero from '@/components/landing/Hero';
 import Navbar from '@/components/landing/Navbar';
+import NavbarInner from '@/components/landing/Navbar';
 
 const benefitOne = {
   title: 'How can Nuggets help you?',
@@ -30,13 +32,17 @@ const benefitOne = {
 export default async function Index() {
   return (
     <>
-      <Navbar />
+      <NavbarInner />
 
       <Hero />
 
       <Benefits data={benefitOne} />
 
-      <BetaSignup />
+      <div className="flex h-full w-full landing-dark-background py-8">
+        <Container className="flex flex-wrap mb-20 lg:gap-10 lg:flex-nowrap justify-center">
+          <BetaSignup dark />
+        </Container>
+      </div>
 
       <Footer />
     </>

@@ -5,13 +5,11 @@ import { Disclosure } from '@headlessui/react';
 import logoImage from '@/app/public/images/nuggets-logo-transparent.png';
 import Image from 'next/image';
 
-import './styles.css';
-
 export default function Navbar() {
   const navigation: Array<string> = [];
 
   return (
-    <div className="w-full">
+    <div className={`w-full`}>
       <nav className="container relative flex flex-wrap items-center justify-between p-8 mx-auto lg:justify-between xl:px-0">
         {/* Logo  */}
         <Disclosure>
@@ -69,7 +67,7 @@ export default function Navbar() {
                         </a>
                       </Link>
                     ))}
-                    <Link href="/" legacyBehavior>
+                    <Link href="/enroll" legacyBehavior>
                       <a className="w-full px-6 py-2 mt-3 text-center font-bold text-white bg-brand-pink rounded-md lg:ml-5">
                         Get Started
                       </a>
@@ -97,7 +95,7 @@ export default function Navbar() {
         </div>
 
         <div className="hidden mr-3 space-x-4 lg:flex nav__item">
-          <Link href="/app" legacyBehavior>
+          <Link href="/enroll" legacyBehavior>
             <a className="px-6 py-2 text-white font-bold bg-brand-pink rounded-md md:ml-5">
               Get started
               {/* TODO: Redirect to usage guide here? */}
