@@ -65,10 +65,10 @@ export default function Footer() {
               ))}
             </div>
           </div>
-          {/* <div className="">
+          <div className="">
             <div>Follow us</div>
             <div className="flex mt-5 space-x-5 text-gray-400 dark:text-gray-500">
-              <a
+              {/* <a
                 href="https://twitter.com/web3templates"
                 target="_blank"
                 rel="noopener"
@@ -91,13 +91,13 @@ export default function Footer() {
               >
                 <span className="sr-only">Instagram</span>
                 <Instagram />
-              </a>
-              <a href="https://linkedin.com/" target="_blank" rel="noopener">
+              </a> */}
+              <a href="https://www.linkedin.com/company/nuggetsai/" target="_blank" rel="noopener">
                 <span className="sr-only">Linkedin</span>
                 <Linkedin />
               </a>
             </div>
-          </div> */}
+          </div>
         </div>
 
         <div className="my-10 text-sm text-center text-gray-600 dark:text-gray-400">
