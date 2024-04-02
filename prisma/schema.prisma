@@ -158,3 +158,26 @@ model Battlecard {
 
   @@map(name: "battlecards")
 }
+
+model PlaybookTemplate {
+  id             String   @id @default(uuid())
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  title          String
+  content        String
+  organizationId String
+
+  @@map(name: "playbook_templates")
+}
+
+model Playbook {
+  id             String   @id @default(uuid())
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  title          String
+  content        String
+  organizationId String
+  customerCallId String
+
+  @@map(name: "playbooks")
+}

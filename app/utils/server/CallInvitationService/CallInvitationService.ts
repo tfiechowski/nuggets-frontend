@@ -2,6 +2,7 @@ import { prisma } from '@/lib/db';
 import { parseInvitation } from '@/app/utils/server/CallInvitationService/parseInvitation';
 import { CustomerCallProvider } from '@prisma/client';
 import { CallNoteService } from '@/app/utils/server/CallNoteService';
+import { PlaybookService } from '@/app/utils/server/PlaybookService';
 
 export class CallInvitationService {
   public static async processEmailInvitation(attachment: string) {
@@ -19,7 +20,8 @@ export class CallInvitationService {
       },
     });
 
-    const membershipId = user.memberships[0].id;
+    const membership = user.memberships[0];
+    const membershipId = membership.id;
 
     const existingCustomerCall = await prisma.customerCall.findFirst({
       where: {
@@ -49,6 +51,7 @@ export class CallInvitationService {
       );
 
       await CallNoteService.create(newCustomerCall.id);
+      await PlaybookService.setupPlaybooksForCall(membership.organizationId, newCustomerCall.id);
       // });
     } else {
       // Update existing

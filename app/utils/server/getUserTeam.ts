@@ -2,7 +2,7 @@ import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseCli
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import { getUserId } from '@/app/utils/server/getUserId';
-import { MembershipRole } from '@prisma/client';
+import { Membership, MembershipRole } from '@prisma/client';
 
 export interface UserMembership {
   organization: { id: string };

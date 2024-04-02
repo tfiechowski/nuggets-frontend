@@ -1,5 +1,6 @@
 import postgres from 'postgres';
 import 'dotenv/config';
+import { PlaybookService } from '@/app/utils/server/PlaybookService';
 
 const dbUrl = process.env.POSTGRES_PRISMA_URL;
 
