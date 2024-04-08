@@ -12,7 +12,6 @@ import './styles.css';
 import { useDebounceCallback } from 'usehooks-ts';
 import { TreeNode } from '@/app/call/[callId]/types';
 
-
 export function PlaybookItem({
   onChange,
   checked,
