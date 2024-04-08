@@ -1,7 +1,7 @@
 import { CreateNewCompetitorNoteDialog } from '@/app/app/core/battlecards/CreateNewCompetitorNoteDialog';
+import { DeleteConfirmationDialog } from '@/app/app/core/battlecards/DeleteConfirmationDialog';
 import Editor from '@/app/app/core/battlecards/Editor';
-import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
-import { getUserRole } from '@/app/utils/server/getUserRole';
+import { BattlecardsService } from '@/app/utils/server/BattlecardsService';
 import { getUserMembership } from '@/app/utils/server/getUserTeam';
 import {
   Accordion,
@@ -10,12 +10,9 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import '@blocknote/react/style.css';
+import { MembershipRole } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import './blocknote-styles.css';
-import { Button } from '@/registry/new-york/ui/button';
-import { DeleteConfirmationDialog } from '@/app/app/core/battlecards/DeleteConfirmationDialog';
-import { MembershipRole } from '@prisma/client';
-import { BattlecardsService } from '@/app/utils/server/BattlecardsService';
 
 interface CompetitorNote {
   id: string;
@@ -27,7 +24,9 @@ const handleUpdateNote = async (id: string, content: string) => {
   'use server';
   const userMembership = await getUserMembership();
 
-  return BattlecardsService.updateContent(userMembership, id, content);
+  await BattlecardsService.updateContent(userMembership, id, content);
+
+  revalidatePath('/app/core/battlecards');
 };
 
 const handleCreateNote = async (competitorName: string): Promise<CompetitorNote> => {
