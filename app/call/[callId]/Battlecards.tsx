@@ -1,6 +1,6 @@
 'use client';
 
-import { ReadOnlyEditor } from '@/app/app/core/competitors/Editor';
+import { ReadOnlyEditor } from '@/app/app/core/battlecards/Editor';
 import { BattlecardsService } from '@/app/utils/server/BattlecardsService';
 import {
   Accordion,

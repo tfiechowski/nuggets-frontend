@@ -1,4 +1,4 @@
-import { ReadOnlyEditor } from '@/app/app/core/competitors/Editor';
+import { ReadOnlyEditor } from '@/app/app/core/battlecards/Editor';
 import { CallNoteService } from '@/app/utils/server/CallNoteService';
 import { CustomerCallService } from '@/app/utils/server/CustomerCallService';
 import { UnauthorizedError } from '@/app/utils/server/errors';

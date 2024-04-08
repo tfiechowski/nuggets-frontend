@@ -51,7 +51,7 @@ export async function Sidebar({ className }: SidebarProps) {
           <Header />
 
           <div className="space-y-1">
-            <Link href="/app/core/competitors">
+            <Link href="/app/core/battlecards">
               <Button variant="ghost" className="w-full justify-start">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@ export async function Sidebar({ className }: SidebarProps) {
                   <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>
-                Competetive notes
+                Battlecards
               </Button>
             </Link>
 

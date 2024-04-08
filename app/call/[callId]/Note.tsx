@@ -1,4 +1,4 @@
-import Editor from '@/app/app/core/competitors/Editor';
+import Editor from '@/app/app/core/battlecards/Editor';
 import { CallNote } from '@prisma/client';
 
 export function Note({

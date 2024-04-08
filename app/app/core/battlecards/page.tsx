@@ -1,5 +1,5 @@
-import { CreateNewCompetitorNoteDialog } from '@/app/app/core/competitors/CreateNewCompetitorNoteDialog';
-import Editor from '@/app/app/core/competitors/Editor';
+import { CreateNewCompetitorNoteDialog } from '@/app/app/core/battlecards/CreateNewCompetitorNoteDialog';
+import Editor from '@/app/app/core/battlecards/Editor';
 import { getServerSupabaseClient } from '@/app/utils/server/getServerSupabaseClient';
 import { getUserRole } from '@/app/utils/server/getUserRole';
 import { getUserMembership } from '@/app/utils/server/getUserTeam';
@@ -13,7 +13,7 @@ import '@blocknote/react/style.css';
 import { revalidatePath } from 'next/cache';
 import './blocknote-styles.css';
 import { Button } from '@/registry/new-york/ui/button';
-import { DeleteConfirmationDialog } from '@/app/app/core/competitors/DeleteConfirmationDialog';
+import { DeleteConfirmationDialog } from '@/app/app/core/battlecards/DeleteConfirmationDialog';
 import { MembershipRole } from '@prisma/client';
 import { BattlecardsService } from '@/app/utils/server/BattlecardsService';
 
@@ -40,7 +40,7 @@ const handleCreateNote = async (competitorName: string): Promise<CompetitorNote>
     throw new Error(response.error.message);
   }
 
-  revalidatePath('/app/core/competitors');
+  revalidatePath('/app/core/battlecards');
 
   return response.data;
 };
@@ -52,7 +52,7 @@ const handleDeleteNote = async (id: string) => {
 
   console.log(`Note ${id} deleted by user: ${userMembership.userId}`);
 
-  revalidatePath('/app/core/competitors');
+  revalidatePath('/app/core/battlecards');
 };
 
 export default async function App() {

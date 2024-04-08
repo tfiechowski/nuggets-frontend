@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 import { TeamInvitationService } from '@/app/utils/client/TeamInvitationService';
 import { useRouter } from 'next/navigation';
-import { CreateNewCompetitorNoteForm } from '@/app/app/core/competitors/CreateNewCompetitorNoteForm';
+import { CreateNewCompetitorNoteForm } from '@/app/app/core/battlecards/CreateNewCompetitorNoteForm';
 
 export function CreateNewCompetitorNoteDialog({ onCreate }: { onCreate: any }) {
   const router = useRouter();
