@@ -62,9 +62,9 @@ export default async function Page({ params }: { params: { callId: string } }) {
           </TabsContent>
 
           <TabsList className="grid w-full grid-cols-3 flex-none">
-            <TabsTrigger value="battlecards">Battlecards</TabsTrigger>
-            <TabsTrigger value="notes">Notes</TabsTrigger>
             <TabsTrigger value="playbooks">Playbooks</TabsTrigger>
+            <TabsTrigger value="notes">Notes</TabsTrigger>
+            <TabsTrigger value="battlecards">Battlecards</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
