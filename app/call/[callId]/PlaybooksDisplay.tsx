@@ -2,7 +2,7 @@
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { ChevronsUpDown } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 
@@ -120,30 +120,38 @@ export default function PlaybookDisplay({
     }));
   };
 
+  function Node({ node, level }: { node: any; level: number }) {
+    const [isOpen, setIsOpen] = useState(level > 0);
+
+    return (
+      <div>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <div className="flex items-center space-x-4 px-4">
+            <h4 className="text-sm font-semibold">{node.label}</h4>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm" className="w-9 p-0">
+                <ChevronsUpDown className="h-4 w-4" />
+                <span className="sr-only">Toggle</span>
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+
+          <CollapsibleContent>
+            <div className="playbook-children">
+              {renderTreeNodes(node.children, level + 1)}
+              {node.tip && <div className="py-2 italic text-sm">{node.tip}</div>}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+    );
+  }
+
   // Recursive function to render tree nodes
-  const renderTreeNodes = (nodes: Array<any>) => {
+  const renderTreeNodes = (nodes: Array<any>, level: number = 0) => {
     return nodes.map((node: any) =>
       node.children.length > 0 ? (
-        <div key={node.id}>
-          <Collapsible>
-            <div className="flex items-center space-x-4 px-4">
-              <h4 className="text-sm font-semibold">{node.label}</h4>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-9 p-0">
-                  <ChevronsUpDown className="h-4 w-4" />
-                  <span className="sr-only">Toggle</span>
-                </Button>
-              </CollapsibleTrigger>
-            </div>
-
-            <CollapsibleContent>
-              <div className="playbook-children">
-                {renderTreeNodes(node.children)}
-                {node.tip && <div className="py-2 italic text-sm">{node.tip}</div>}
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
+        <Node node={node} key={node.id} level={level} />
       ) : (
         <div className="playbook-item py-1">
           <PlaybookItem
