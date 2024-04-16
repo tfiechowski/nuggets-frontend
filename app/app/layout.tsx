@@ -1,3 +1,4 @@
+import GoogleAnalytics from '@/components/analytics/GoogleAnalytics';
 import { Sidebar } from '@/components/ui/Sidebar';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -13,6 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
+      <GoogleAnalytics />
     </>
   );
 }
