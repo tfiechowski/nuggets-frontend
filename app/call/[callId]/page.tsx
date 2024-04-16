@@ -48,7 +48,7 @@ export default async function Page({ params }: { params: { callId: string } }) {
 
     return (
       <div className="h-screen">
-        <Tabs defaultValue="battlecards" className="w-[440px] h-full flex flex-col">
+        <Tabs defaultValue="playbooks" className="w-[440px] h-full flex flex-col">
           <TabsContent value="battlecards" className="flex-1 overflow-y-scroll">
             <Battlecards battlecards={battlecards} call={call} />
           </TabsContent>
