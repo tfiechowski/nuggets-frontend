@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <GoogleAnalytics />
       <div className="bg-background min-h-screen w-full">
         <Toaster />
         <div className="grid lg:grid-cols-6 min-h-screen w-full">
@@ -14,7 +15,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
-      <GoogleAnalytics />
     </>
   );
 }

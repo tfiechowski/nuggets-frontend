@@ -1,14 +1,8 @@
-import { NODE_ENV } from '@/app/utils/config';
-import { GoogleAnalytics as NextGoogleAnalytics } from '@next/third-parties/google';
+import { getUserId } from '@/app/utils/server/getUserId';
+import GACLientSide from '@/components/analytics/GAClientSide';
 
-export default function GoogleAnalytics() {
-  if (NODE_ENV !== 'production') {
-    return <></>;
-  }
+export default async function GoogleAnalytics() {
+  const userId = await getUserId();
 
-  return (
-    <span id="nuggets-google-analytics">
-      <NextGoogleAnalytics gaId="G-4CNMYESB9K" />
-    </span>
-  );
+  return <GACLientSide userId={userId} />;
 }
