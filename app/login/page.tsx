@@ -18,6 +18,7 @@ export default function Login({ searchParams }: { searchParams: { message: strin
     });
 
     if (error) {
+      console.log('Error while logging in:', error);
       return redirect('/login?message=Could not authenticate user');
     }
 
@@ -67,7 +68,7 @@ export default function Login({ searchParams }: { searchParams: { message: strin
           className="rounded-md px-4 py-2 bg-inherit border mb-6"
           type="password"
           name="password"
-          placeholder="••••••••"
+          placeholder=""
           required
         />
 
