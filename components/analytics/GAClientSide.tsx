@@ -15,6 +15,8 @@ export default function GACLientSide({ userId }: { userId: string }) {
           gaOptions: { userId },
         },
       ]);
+
+      console.log(`After Initialising ReactGA for user ${userId}`);
     }
   }, []);
 
