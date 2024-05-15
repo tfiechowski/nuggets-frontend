@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/registry/new-york/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Calendar } from 'lucide-react';
 
 export type Playlist = (typeof playlists)[number];
 
@@ -140,6 +141,20 @@ export async function Sidebar({ className }: SidebarProps) {
         <div className="px-3">
           <h2 className="px-4 text-lg font-semibold tracking-tight">Account</h2>
           <h5 className="px-4 pb-4 text-xs font-light tracking-tight">{user.data.user?.email}</h5>
+
+          <Link href="/app/settings/calendar">
+            <Button variant="ghost" className="w-full justify-start">
+              <Calendar className="mr-2 h-4 w-4" />
+              Calendar Integration
+            </Button>
+          </Link>
+
+          <Link href="/api/google-calendar/watch">
+            <Button variant="ghost" className="w-full justify-start">
+              <Calendar className="mr-2 h-4 w-4" />
+              Full sync
+            </Button>
+          </Link>
 
           <div className="space-y-1">
             <Link href="/auth/logout">

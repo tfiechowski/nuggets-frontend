@@ -29,6 +29,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "./test/jest-prisma.d.ts",
+    "app/api/google-calendar/oauth",
   ],
   "exclude": ["node_modules"],
 }

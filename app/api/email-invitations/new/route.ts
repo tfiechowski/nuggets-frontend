@@ -12,6 +12,7 @@ const RequestBody = z.object({
 
 async function handle(body: RequestBody): Promise<{ data?: any; error?: any }> {
   const { attachment } = body;
+  console.log('🚀 ~ handle ~ body:', body);
   console.log('🚀 ~ attachment:', attachment);
 
   await CallInvitationService.processEmailInvitation(attachment);

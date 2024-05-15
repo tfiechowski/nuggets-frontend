@@ -95,6 +95,8 @@ model CustomerCall {
   organizerId    String
   note           CallNote?
 
+  cancelled     Boolean @default(false)
+
   @@map(name: "customer_calls")
 }
 
@@ -180,4 +182,12 @@ model Playbook {
   customerCallId String
 
   @@map(name: "playbooks")
+}
+
+model GoogleCalendarIntegration {
+  membershipId  String @id @unique
+  refreshToken  String
+  nextSyncToken String?
+
+  @@map(name: "google_calendar_integrations")
 }

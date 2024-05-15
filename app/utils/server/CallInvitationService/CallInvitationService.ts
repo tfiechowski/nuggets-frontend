@@ -33,6 +33,9 @@ export class CallInvitationService {
       // Create new customer call
 
       // await prisma.$transaction(async tx => {
+      // TODO: HERE NEXT - probably move this a bit down, to accept payload from email
+      // attachments as well as calendar integration
+
       const newCustomerCall = await prisma.customerCall.create({
         data: {
           data: { zoom: { ...invitationData.zoomCall } },
@@ -50,8 +53,7 @@ export class CallInvitationService {
         newCustomerCall
       );
 
-      await CallNoteService.create(newCustomerCall.id);
-      await PlaybookService.setupPlaybooksForCall(membership.organizationId, newCustomerCall.id);
+      CallInvitationService.setupCallResources(newCustomerCall.id, membership.organizationId);
       // });
     } else {
       // Update existing
@@ -73,5 +75,10 @@ export class CallInvitationService {
         },
       });
     }
+  }
+
+  public static async setupCallResources(customerCallId: string, organizationId: string) {
+    await CallNoteService.create(customerCallId);
+    await PlaybookService.setupPlaybooksForCall(organizationId, customerCallId);
   }
 }
