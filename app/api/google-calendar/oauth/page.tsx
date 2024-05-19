@@ -18,7 +18,7 @@ function getToken(userMembership: UserMembership, code: string) {
         return resolve({ error: 'No tokens' });
       }
 
-      const refreshToken = tokens.refresh_token; // <- Store it in your DB
+      const refreshToken = tokens.refresh_token;
 
       if (refreshToken === null || refreshToken === undefined) {
         return resolve({ error: 'No refresh token' });

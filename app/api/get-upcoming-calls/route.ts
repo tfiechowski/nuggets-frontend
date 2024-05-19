@@ -11,7 +11,6 @@ async function handle(): Promise<any[]> {
 }
 
 export async function GET(request: Request) {
-  console.log('REQUEST');
   try {
     const data = await handle();
     return NextResponse.json({ data });
@@ -19,7 +18,7 @@ export async function GET(request: Request) {
     console.error('Error: ', error);
     if (error instanceof ZodError) {
       return NextResponse.json({ errors: error.issues }, { status: 400 });
-    } else if(error instanceof UnauthorizedError) {
+    } else if (error instanceof UnauthorizedError) {
       return NextResponse.json({}, { status: 401 });
     } else {
       return NextResponse.json({ error }, { status: 400 });
