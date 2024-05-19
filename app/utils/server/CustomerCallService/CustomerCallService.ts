@@ -1,6 +1,8 @@
 import { CallInvitationService } from '@/app/utils/server/CallInvitationService';
+import { parseLocation } from '@/app/utils/server/CallInvitationService/parseProvider';
 import { UserMembership } from '@/app/utils/server/getUserTeam';
 import { prisma } from '@/lib/db';
+import { CustomerCall } from '@prisma/client';
 import { calendar_v3 } from 'googleapis';
 
 export class CustomerCallService {
@@ -32,19 +34,24 @@ export class CustomerCallService {
   }
 
   public static async getUpcoming(userMembership: UserMembership) {
+    const now = new Date();
+
     return prisma.customerCall.findMany({
       where: {
         organizerId: {
           equals: userMembership.membershipId,
         },
-        scheduledAt: {
-          gte: new Date(),
-        },
+        OR: [
+          {
+            AND: [{ scheduledAt: { lte: now } }, { scheduledEndAt: { gte: now } }],
+          },
+          { scheduledAt: { gt: now } },
+        ],
       },
       orderBy: {
         scheduledAt: 'asc',
       },
-      take: 10,
+      take: 5,
     });
   }
 
@@ -61,7 +68,7 @@ export class CustomerCallService {
     const skipInternalMeetings = (event: calendar_v3.Schema$Event) =>
       event.attendees?.some((attendee) => !attendee.email?.endsWith(customerEmailDomain));
 
-    const pickDeleted = (event: calendar_v3.Schema$Event) => event.status === 'cancelled';
+    const pickCancelled = (event: calendar_v3.Schema$Event) => event.status === 'cancelled';
 
     const filteredEvents = events
       .filter(skipNoIds)
@@ -70,14 +77,13 @@ export class CustomerCallService {
       .filter(skipInternalMeetings);
     console.log('Updating', filteredEvents.length, 'events for', userMembership.membershipId);
 
-    const deletedEvents = events.filter(pickDeleted);
-    console.log('Deleted events:', deletedEvents.length);
+    const cancelledEvents = events.filter(pickCancelled);
 
-    if (deletedEvents.length > 0) {
+    if (cancelledEvents.length > 0) {
       await prisma.customerCall.updateMany({
         where: {
           eventId: {
-            in: deletedEvents.map((event) => event.id) as any,
+            in: cancelledEvents.map((event) => event.id) as any,
           },
         },
         data: {
@@ -85,11 +91,6 @@ export class CustomerCallService {
         },
       });
     }
-
-    // console.log(
-    //   '🚀 ~ CustomerCallService ~ processEventsSync ~ filteredEvents:',
-    //   filteredEvents.map((event) => JSON.stringify([event.id, event.attendees]))
-    // );
 
     const existingEvents = await prisma.customerCall.findMany({
       where: {
@@ -100,14 +101,15 @@ export class CustomerCallService {
       },
       select: {
         id: true,
+        eventId: true,
       },
     });
-    console.log('Existing events:', existingEvents.length);
-
+    
     const newEvents = filteredEvents.filter(
-      (event) => !existingEvents.find((e) => e.id === event.id)
+      (event) => !existingEvents.find((e) => e.eventId === event.id)
     );
-    console.log('New events:', newEvents.length);
+
+    console.log('Existing:', existingEvents.length, "New:", newEvents.length);
 
     // Do upsert for all events
     await Promise.all(
@@ -117,6 +119,14 @@ export class CustomerCallService {
           return {};
         }
 
+        let additionalData: Partial<CustomerCall> = { data: {} };
+
+        if (event.location) {
+          // Todo: refactor to builder pattern?
+          additionalData = addCallProviderData(additionalData, event.location);
+        }
+
+        // TODO: update attendees too?
         return prisma.customerCall.upsert({
           where: {
             eventId: event.id,
@@ -130,8 +140,7 @@ export class CustomerCallService {
             scheduledAt: event.start?.dateTime,
             scheduledEndAt: event.end?.dateTime,
             organizerId: userMembership.membershipId,
-            provider: 'ZOOM',
-            data: {},
+            ...additionalData,
           },
           update: {
             title: event.summary || 'Summary',
@@ -139,44 +148,47 @@ export class CustomerCallService {
             timezone: event.start?.timeZone,
             scheduledAt: event.start?.dateTime,
             scheduledEndAt: event.end?.dateTime,
+            ...additionalData,
           },
         });
-
-        // TODO: continue from here
-        // make sure all calls have Notes and Playbook Templates
       })
     );
 
-    const newCustomerCalls = (await prisma.customerCall.findMany({
+    const newCustomerCalls = await prisma.customerCall.findMany({
       where: {
         eventId: {
-          in: newEvents.map(event => event.id as string)
-        }
+          in: newEvents.map((event) => event.id as string),
+        },
       },
       select: {
-        id: true
-      }
-    }));
-    console.log("🚀 ~ CustomerCallService ~ newCustomerCallIds:", newCustomerCalls)
-
-    console.log('All events updated or created');
+        id: true,
+      },
+    });
 
     // Create resources for remaining events
     // this should ideally be updated as currently it's not
     // efficient to set up resources like this, there are a
     // lot of underlying DB calls and logic.
     await Promise.all(
-      newCustomerCalls.map((customerCall) => {
-        console.log("🚀 ~ CustomerCallService ~ newEvents.map ~ customerCallId:", customerCall.id, "org id:",  userMembership.organization.id)
-        return CallInvitationService.setupCallResources(
-          customerCall.id,
-          userMembership.organization.id
-        );
-      })
+      newCustomerCalls.map((customerCall) =>
+        CallInvitationService.setupCallResources(customerCall.id, userMembership.organization.id)
+      )
     );
 
     console.log('All events updated');
+  }
+}
 
-    // TODO: continue here
+function addCallProviderData(data: any, location: string) {
+  const callProviderData = parseLocation(location);
+
+  if (callProviderData) {
+    return {
+      ...data,
+      provider: callProviderData.provider,
+      data: {
+        [callProviderData.provider.toLowerCase()]: callProviderData.data,
+      },
+    };
   }
 }

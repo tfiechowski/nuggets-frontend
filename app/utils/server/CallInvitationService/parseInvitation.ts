@@ -1,17 +1,11 @@
 // This could be actually done on Vercel side with the ical library for handling
 // the ical files in a proper manner, instead of these regexps :D
 
+import { ZoomCall, parseZoomUrl } from '@/app/utils/server/CallInvitationService/providers/zoom';
 import * as ICAL from 'node-ical';
 
 interface Data {
   attachment: string;
-}
-
-interface ZoomCall {
-  id: string;
-  password: string;
-  url: string;
-  customerDomain: string;
 }
 
 interface InvitationData {
@@ -22,43 +16,6 @@ interface InvitationData {
   title: string;
   uid: string;
   zoomCall: ZoomCall;
-}
-
-function parseZoomUrl(zoomUrl: string): {
-  zoomCallId: string;
-  zoomCallPassword: string;
-  zoomCustomerDomain: string;
-} {
-  let zoomCallPassword = '';
-  let zoomCallId = '';
-  let zoomCustomerDomain = '';
-
-  const regex = /https:\/\/(.*)\.zoom\.us\/j\/([0-9]+)\?pwd=([a-zA-Z0-9\.]{1,32})/gm;
-  let m;
-
-  while ((m = regex.exec(zoomUrl)) !== null) {
-    // This is necessary to avoid infinite loops with zero-width matches
-    if (m.index === regex.lastIndex) {
-      regex.lastIndex++;
-    }
-
-    // The result can be accessed through the `m`-variable.
-    m.forEach((match, groupIndex) => {
-      if (groupIndex === 1) {
-        zoomCustomerDomain = match;
-      } else if (groupIndex === 2) {
-        zoomCallId = match;
-      } else if (groupIndex === 3) {
-        zoomCallPassword = match;
-      }
-    });
-  }
-
-  return {
-    zoomCallId,
-    zoomCallPassword,
-    zoomCustomerDomain,
-  };
 }
 
 function parseOrganizer(organizerIcalString: string): string {
