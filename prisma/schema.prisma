@@ -86,7 +86,7 @@ model CustomerCall {
   title     String
 
   eventId        String               @unique @map("event_id")
-  provider       CustomerCallProvider
+  provider       CustomerCallProvider?
   timezone       String
   scheduledAt    DateTime             @map("scheduled_at")
   scheduledEndAt DateTime             @map("scheduled_end_at")
