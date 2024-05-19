@@ -1,7 +1,5 @@
-import { API_KEY } from '@/app/api/internal/apiKey';
-import { BotCallService } from '@/app/utils/server/BotCallService/BotCallService';
 import { CustomerCallService } from '@/app/utils/server/CustomerCallService';
-import { getUserId } from '@/app/utils/server/getUserId';
+import { UnauthorizedError } from '@/app/utils/server/errors';
 import { getUserMembership } from '@/app/utils/server/getUserTeam';
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
@@ -21,6 +19,8 @@ export async function GET(request: Request) {
     console.error('Error: ', error);
     if (error instanceof ZodError) {
       return NextResponse.json({ errors: error.issues }, { status: 400 });
+    } else if(error instanceof UnauthorizedError) {
+      return NextResponse.json({}, { status: 401 });
     } else {
       return NextResponse.json({ error }, { status: 400 });
     }
