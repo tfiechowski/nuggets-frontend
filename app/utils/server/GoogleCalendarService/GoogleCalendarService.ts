@@ -1,3 +1,4 @@
+import { ENV_WEBHOOK_ENDPOINT, GOOGLE_NOTIFICATIONS_TTL } from '@/app/utils/config';
 import { CustomerCallService } from '@/app/utils/server/CustomerCallService';
 import {
   GoogleCalendar,
@@ -6,9 +7,11 @@ import {
 } from '@/app/utils/server/GoogleCalendarService/GoogleOAuthClient';
 import { UserMembership } from '@/app/utils/server/getUserTeam';
 import { prisma } from '@/lib/db';
+import { randomUUID } from 'crypto';
 import { OAuth2Client } from 'google-auth-library';
 import { calendar_v3, google } from 'googleapis';
-import { sync } from 'node-ical';
+import dayjs from 'dayjs';
+import { GoogleEventsNotificationChannel } from '@prisma/client';
 
 export class GoogleCalendarService {
   public static async isUserIntegrated(userMembership: UserMembership): Promise<boolean> {
@@ -59,50 +62,66 @@ export class GoogleCalendarService {
     return true;
   }
 
-  private static async getOAuthClient(userMembership: UserMembership): Promise<OAuth2Client> {
-    const refreshToken = await GoogleCalendarService.getRefreshToken(userMembership);
-    const oAuthClient = GoogleOAuth2Client();
-    oAuthClient.setCredentials({
-      refresh_token: refreshToken,
-    });
+  public static async refreshEventsWatch(userMembership: UserMembership, force: boolean) {
+    if (force) {
+      const allUserNotificationChannels = await prisma.googleEventsNotificationChannel.findMany({
+        where: { membershipId: userMembership.membershipId },
+      });
 
-    return oAuthClient;
+      await GoogleCalendarService.setupCalendarSync(userMembership);
+
+      if (allUserNotificationChannels.length) {
+        await GoogleCalendarService.stopNotifications(userMembership, allUserNotificationChannels);
+      }
+    } else {
+      const existingNotificationChannels = await prisma.googleEventsNotificationChannel.findMany({
+        where: {
+          membershipId: userMembership.membershipId,
+          expiresAt: {
+            gte: dayjs().subtract(1, 'minute').toDate(),
+          },
+        },
+        orderBy: {
+          expiresAt: 'asc',
+        },
+      });
+
+      await GoogleCalendarService.setupCalendarSync(userMembership);
+      await GoogleCalendarService.stopNotifications(userMembership, existingNotificationChannels);
+    }
   }
 
-  private static async getRefreshToken(userMembership: UserMembership) {
-    const { refreshToken } = await prisma.googleCalendarIntegration.findFirstOrThrow({
-      where: {
-        membershipId: {
-          equals: userMembership.membershipId,
-        },
-      },
-    });
+  private static async stopNotifications(
+    userMembership: UserMembership,
+    channels: Array<GoogleEventsNotificationChannel>
+  ) {
+    const calendar = await GoogleCalendarService.getCalendar(userMembership);
+    await Promise.all(
+      channels.map((channel) =>
+        calendar.channels.stop({
+          requestBody: {
+            id: channel.id,
+            resourceId: channel.resourceId,
+          },
+        })
+      )
+    );
 
-    return refreshToken;
+    const channelIds = channels.map(({ id }) => id);
+
+    return Promise.all([
+      prisma.googleEventsNotificationChannel.deleteMany({
+        where: {
+          id: {
+            in: channelIds,
+          },
+        },
+      }),
+    ]);
   }
 
-  public static async setupCalendarSync(userMembership: UserMembership) {
-    const { refreshToken } = await prisma.googleCalendarIntegration.findFirstOrThrow({
-      where: {
-        membershipId: {
-          equals: userMembership.membershipId,
-        },
-      },
-    });
-    console.log('🚀 ~ setupEventsWatch ~ refreshToken:', refreshToken);
-
-    const oAuthClient = GoogleOAuth2Client();
-    oAuthClient.setCredentials({
-      refresh_token: refreshToken,
-      scope: [
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/calendar',
-        'https://www.googleapis.com/auth/calendar.readonly',
-        'https://www.googleapis.com/auth/calendar.events',
-        'https://www.googleapis.com/auth/calendar.events.readonly',
-      ].join(','),
-    });
+  private static async getCalendar(userMembership: UserMembership): Promise<calendar_v3.Calendar> {
+    const oAuthClient = await GoogleCalendarService.getOAuthClient(userMembership);
 
     const auth = new google.auth.GoogleAuth({
       // Scopes can be specified either as an array or as a single, space-delimited string.
@@ -120,29 +139,74 @@ export class GoogleCalendarService {
     const authClient = await auth.getClient();
     google.options({ auth: authClient });
 
+    return calendar;
+  }
+
+  public static async setupCalendarSync(userMembership: UserMembership) {
+    const calendar = await GoogleCalendarService.getCalendar(userMembership);
+
     try {
-      const id = userMembership.membershipId;
+      const id = randomUUID();
 
       const response = await calendar.events.watch({
         calendarId: 'primary',
         requestBody: {
           id,
-          address: 'https://f775-213-134-186-96.ngrok-free.app/api/google-calendar/webhook',
-          // address: 'https://getnuggets.io/api/google-calendar/webhook',
+          address: `${ENV_WEBHOOK_ENDPOINT}/api/google-calendar/webhook`,
           type: 'web_hook',
           params: {
-            ttl: '30000',
+            ttl: GOOGLE_NOTIFICATIONS_TTL,
           },
         },
       });
 
-      // console.log('Watch setup:', response);
+      const expiresAt = parseInt((response as any).data.expiration);
+      const resourceId = (response as any).data.resourceId;
+
+      await prisma.googleEventsNotificationChannel.create({
+        data: {
+          membershipId: userMembership.membershipId,
+          id,
+          expiresAt: new Date(expiresAt),
+          resourceId,
+        },
+      });
 
       return response;
     } catch (error) {
       console.log('🚀 ~ watch setup ~ error:', error);
       return error;
     }
+  }
+
+  private static async getOAuthClient(userMembership: UserMembership): Promise<OAuth2Client> {
+    const refreshToken = await GoogleCalendarService.getRefreshToken(userMembership);
+    const oAuthClient = GoogleOAuth2Client();
+    oAuthClient.setCredentials({
+      refresh_token: refreshToken,
+      scope: [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/calendar',
+        'https://www.googleapis.com/auth/calendar.readonly',
+        'https://www.googleapis.com/auth/calendar.events',
+        'https://www.googleapis.com/auth/calendar.events.readonly',
+      ].join(','),
+    });
+
+    return oAuthClient;
+  }
+
+  private static async getRefreshToken(userMembership: UserMembership) {
+    const { refreshToken } = await prisma.googleCalendarIntegration.findFirstOrThrow({
+      where: {
+        membershipId: {
+          equals: userMembership.membershipId,
+        },
+      },
+    });
+
+    return refreshToken;
   }
 
   public static async runCalendarSync(userMembership: UserMembership) {
@@ -163,7 +227,6 @@ export class GoogleCalendarService {
         },
       })
     ).nextSyncToken;
-    console.log('🚀 ~ GoogleCalendarService ~ runCalendarSync ~ syncToken:', syncToken);
 
     if (syncToken === null) {
       console.log('Performing full sync');

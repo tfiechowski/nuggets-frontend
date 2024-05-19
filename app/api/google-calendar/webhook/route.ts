@@ -5,21 +5,6 @@ import { GoogleCalendarService } from '@/app/utils/server/GoogleCalendarService'
 import { prisma } from '@/lib/db';
 
 export async function POST(request: NextApiRequest) {
-  console.log('Google webhook event request:', request.body);
-
-  // const googleHeaders = Object.entries(request.headers).filter(([key, value]) => {
-  //   console.log("Key:", key)
-  //   return key.toLocaleLowerCase().includes('x-goog')
-  // })
-
-  // const googleHeaders = [
-  //   "X-Goog-Channel-ID",
-  //   "X-Goog-Message-Number",
-  //   "X-Goog-Resource-ID",
-  //   "X-Goog-Resource-State",
-  //   "X-Goog-Resource-URI"
-  // ]
-
   const headers: Headers = request.headers as unknown as Headers;
 
   const googleHeaders = Object.fromEntries(
@@ -28,30 +13,34 @@ export async function POST(request: NextApiRequest) {
     )
   );
 
-  console.log('Entries:', headers.entries());
+  const channelId = googleHeaders['x-goog-channel-id'];
 
-  console.log('🚀 ~ POST ~ request.googleHeaders:', googleHeaders);
-
-  // Call GoogleCalendarService.runCalendarSync()
-  // 'x-goog-channel-id' header should be the ID of a userMembership
-  // so it should be enough to call the mentioned function
-  const userMembershipId = googleHeaders['x-goog-channel-id'];
-
-  if (userMembershipId === undefined) {
-    console.log('Cannot get userMembershipId from Google Calendar watch event');
+  if (channelId === undefined) {
+    console.log('Cannot get channelId from Google Calendar watch event');
     return NextResponse.json({});
   }
-  console.log('🚀 ~ POST ~ userMembershipId:', userMembershipId);
 
-  const membership = await prisma.membership.findFirstOrThrow({
+  const notificationChannel = await prisma.googleEventsNotificationChannel.findFirst({
     where: {
-      id: userMembershipId,
+      id: channelId,
     },
   });
 
-  // TODO: Dirty hack, improve
+  // Notification can be technically correct, but the notification channel
+  // is expired at this point from our DB.
+  if (notificationChannel === null) {
+    return NextResponse.json({});
+  }
+
+  const membership = await prisma.membership.findFirstOrThrow({
+    where: {
+      id: notificationChannel.membershipId,
+    },
+  });
+
+  // TODO: Dirty hack with casting the data, improve
   GoogleCalendarService.runCalendarSync({
-    membershipId: userMembershipId,
+    membershipId: notificationChannel.membershipId,
     organization: { id: membership.organizationId },
   } as any);
 

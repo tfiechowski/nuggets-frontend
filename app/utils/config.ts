@@ -19,3 +19,10 @@ export const NEXT_PUBLIC_DEFAULT_URL =
   PUBLIC_NEXT_VERCEL_ENV === 'production' ? 'https://getnuggets.io' : 'http://localhost:3000';
 
 export const ENV_RESEND_FORCE_EMAIL = process.env.ENV_RESEND_FORCE_EMAIL;
+
+export const ENV_WEBHOOK_ENDPOINT =
+  NODE_ENV === 'production'
+    ? NEXT_PUBLIC_DEFAULT_URL
+    : 'https://f775-213-134-186-96.ngrok-free.app';
+
+export const GOOGLE_NOTIFICATIONS_TTL = NODE_ENV === 'production' ? 604800 : 600;

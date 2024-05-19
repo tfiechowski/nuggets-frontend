@@ -191,3 +191,12 @@ model GoogleCalendarIntegration {
 
   @@map(name: "google_calendar_integrations")
 }
+
+model GoogleEventsNotificationChannel {
+  id             String   @id @default(uuid())
+  membershipId   String
+  resourceId     String
+  expiresAt      DateTime
+
+  @@map(name: "google_events_notification_channel")
+}
