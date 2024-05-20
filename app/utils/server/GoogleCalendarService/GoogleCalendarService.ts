@@ -62,6 +62,40 @@ export class GoogleCalendarService {
     return true;
   }
 
+  private static getExpiringTimeThreshold() {
+    return dayjs().add(60, 'minute').toDate();
+  }
+
+  public static async refreshUsersCalendarIntegrations() {
+    const nearExpirationIntegrations = await prisma.googleEventsNotificationChannel.findMany({
+      where: {
+        expiresAt: {
+          lte: GoogleCalendarService.getExpiringTimeThreshold(),
+        },
+      },
+      orderBy: {
+        expiresAt: 'asc',
+      },
+      take: 10,
+    });
+
+    
+    if (nearExpirationIntegrations.length === 0) {
+      return true;
+    }
+    
+    const uniqueMemberships = Array.from(new Set(nearExpirationIntegrations.map(i => i.membershipId)));
+    const memberships = uniqueMemberships.map(
+      (id) => ({ membershipId: id }) as UserMembership
+    );
+
+    console.log(`Refreshing ${nearExpirationIntegrations.length} calendar integrations for ${memberships.length} users`);
+
+    return Promise.all(
+      memberships.map((membership) => GoogleCalendarService.refreshEventsWatch(membership, true))
+    );
+  }
+
   public static async refreshEventsWatch(userMembership: UserMembership, force: boolean) {
     if (force) {
       const allUserNotificationChannels = await prisma.googleEventsNotificationChannel.findMany({
@@ -70,7 +104,7 @@ export class GoogleCalendarService {
 
       await GoogleCalendarService.setupCalendarSync(userMembership);
 
-      if (allUserNotificationChannels.length) {
+      if (allUserNotificationChannels.length > 0) {
         await GoogleCalendarService.stopNotifications(userMembership, allUserNotificationChannels);
       }
     } else {
@@ -78,7 +112,7 @@ export class GoogleCalendarService {
         where: {
           membershipId: userMembership.membershipId,
           expiresAt: {
-            gte: dayjs().subtract(1, 'minute').toDate(),
+            lte: GoogleCalendarService.getExpiringTimeThreshold(),
           },
         },
         orderBy: {
@@ -96,7 +130,7 @@ export class GoogleCalendarService {
     channels: Array<GoogleEventsNotificationChannel>
   ) {
     const calendar = await GoogleCalendarService.getCalendar(userMembership);
-    await Promise.all(
+    const results = await Promise.allSettled(
       channels.map((channel) =>
         calendar.channels.stop({
           requestBody: {
@@ -109,15 +143,13 @@ export class GoogleCalendarService {
 
     const channelIds = channels.map(({ id }) => id);
 
-    return Promise.all([
-      prisma.googleEventsNotificationChannel.deleteMany({
-        where: {
-          id: {
-            in: channelIds,
-          },
+    return prisma.googleEventsNotificationChannel.deleteMany({
+      where: {
+        id: {
+          in: channelIds,
         },
-      }),
-    ]);
+      },
+    });
   }
 
   private static async getCalendar(userMembership: UserMembership): Promise<calendar_v3.Calendar> {
