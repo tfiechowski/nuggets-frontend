@@ -127,6 +127,7 @@ export class CustomerCallService {
         }
 
         // TODO: update attendees too?
+        // TODO: Fix types as well
         return prisma.customerCall.upsert({
           where: {
             eventId: event.id,
@@ -136,20 +137,20 @@ export class CustomerCallService {
             eventId: event.id,
             title: event.summary || 'Summary',
             createdAt: event.created || 'Unknown',
-            timezone: event.start?.timeZone,
-            scheduledAt: event.start?.dateTime,
-            scheduledEndAt: event.end?.dateTime,
+            timezone: event.start?.timeZone as any,
+            scheduledAt: event.start?.dateTime as any,
+            scheduledEndAt: event.end?.dateTime as any,
             organizerId: userMembership.membershipId,
             ...additionalData,
-          },
+          } as any,
           update: {
             title: event.summary || 'Summary',
             createdAt: event.created || 'Unknown',
-            timezone: event.start?.timeZone,
-            scheduledAt: event.start?.dateTime,
-            scheduledEndAt: event.end?.dateTime,
+            timezone: event.start?.timeZone as any,
+            scheduledAt: event.start?.dateTime as any,
+            scheduledEndAt: event.end?.dateTime as any,
             ...additionalData,
-          },
+          } as any,
         });
       })
     );

@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleCalendarService } from '@/app/utils/server/GoogleCalendarService';
 
 import { prisma } from '@/lib/db';
 
-export async function POST(request: NextApiRequest) {
+export async function POST(request: Request) {
   const headers: Headers = request.headers as unknown as Headers;
 
   const googleHeaders = Object.fromEntries(

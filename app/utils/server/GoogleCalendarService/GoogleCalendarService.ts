@@ -79,17 +79,18 @@ export class GoogleCalendarService {
       take: 10,
     });
 
-    
     if (nearExpirationIntegrations.length === 0) {
       return true;
     }
-    
-    const uniqueMemberships = Array.from(new Set(nearExpirationIntegrations.map(i => i.membershipId)));
-    const memberships = uniqueMemberships.map(
-      (id) => ({ membershipId: id }) as UserMembership
-    );
 
-    console.log(`Refreshing ${nearExpirationIntegrations.length} calendar integrations for ${memberships.length} users`);
+    const uniqueMemberships = Array.from(
+      new Set(nearExpirationIntegrations.map((i) => i.membershipId))
+    );
+    const memberships = uniqueMemberships.map((id) => ({ membershipId: id }) as UserMembership);
+
+    console.log(
+      `Refreshing ${nearExpirationIntegrations.length} calendar integrations for ${memberships.length} users`
+    );
 
     return Promise.all(
       memberships.map((membership) => GoogleCalendarService.refreshEventsWatch(membership, true))
@@ -169,7 +170,7 @@ export class GoogleCalendarService {
     // Acquire an auth client, and bind it to all future calls
     const calendar = google.calendar('v3');
     const authClient = await auth.getClient();
-    google.options({ auth: authClient });
+    google.options({ auth: authClient as any });
 
     return calendar;
   }
@@ -187,7 +188,7 @@ export class GoogleCalendarService {
           address: `${ENV_WEBHOOK_ENDPOINT}/api/google-calendar/webhook`,
           type: 'web_hook',
           params: {
-            ttl: GOOGLE_NOTIFICATIONS_TTL,
+            ttl: GOOGLE_NOTIFICATIONS_TTL as any,
           },
         },
       });
@@ -271,7 +272,7 @@ export class GoogleCalendarService {
     let lastSyncToken = null;
 
     do {
-      settings.pageToken = pageToken;
+      settings.pageToken = pageToken as any;
 
       try {
         const response = await calendar.events.list(settings);

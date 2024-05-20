@@ -31,7 +31,7 @@ export class BotCallService {
           callId: call.id,
           data: call.data as any,
           organizer: call.organizerId,
-          provider: call.provider,
+          provider: call.provider as any,
           scheduledAt: call.scheduledAt,
           scheduledEndAt: call.scheduledEndAt,
           status: BotCallStatus.MARKED_FOR_SCHEDULE,

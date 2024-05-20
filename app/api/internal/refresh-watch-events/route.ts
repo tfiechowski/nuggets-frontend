@@ -3,7 +3,7 @@ import { GoogleCalendarService } from '@/app/utils/server/GoogleCalendarService'
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 
-async function handle(): Promise<any[]> {
+async function handle(): Promise<any> {
   return GoogleCalendarService.refreshUsersCalendarIntegrations();
 }
 
