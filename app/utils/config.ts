@@ -26,3 +26,6 @@ export const ENV_WEBHOOK_ENDPOINT =
     : 'https://f775-213-134-186-96.ngrok-free.app';
 
 export const GOOGLE_NOTIFICATIONS_TTL = NODE_ENV === 'production' ? 604800 : 600;
+
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;

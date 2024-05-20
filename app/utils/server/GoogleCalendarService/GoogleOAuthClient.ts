@@ -1,5 +1,8 @@
-import { NEXT_PUBLIC_DEFAULT_URL } from '@/app/utils/config';
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '@/app/utils/google/data';
+import {
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  NEXT_PUBLIC_DEFAULT_URL,
+} from '@/app/utils/config';
 import { google } from 'googleapis';
 
 const redirectUri = encodeURI(NEXT_PUBLIC_DEFAULT_URL + '/api/google-calendar/oauth');
