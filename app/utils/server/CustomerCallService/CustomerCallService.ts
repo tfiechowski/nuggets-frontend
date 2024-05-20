@@ -104,12 +104,12 @@ export class CustomerCallService {
         eventId: true,
       },
     });
-    
+
     const newEvents = filteredEvents.filter(
       (event) => !existingEvents.find((e) => e.eventId === event.id)
     );
 
-    console.log('Existing:', existingEvents.length, "New:", newEvents.length);
+    console.log('Existing:', existingEvents.length, 'New:', newEvents.length);
 
     // Do upsert for all events
     await Promise.all(
