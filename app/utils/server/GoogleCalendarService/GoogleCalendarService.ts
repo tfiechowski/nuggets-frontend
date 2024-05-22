@@ -58,7 +58,6 @@ export class GoogleCalendarService {
 
     // TODO: HERE NEXT - parse events, add then to CustomerCall db
     // use id to identify specific event, iCalUID is the same for recurring events
-
     return true;
   }
 
