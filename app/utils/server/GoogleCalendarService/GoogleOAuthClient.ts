@@ -9,6 +9,7 @@ const redirectUri = encodeURI(NEXT_PUBLIC_DEFAULT_URL + '/api/google-calendar/oa
 
 export const GoogleOAuth2Client = () =>
   new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirectUri);
+console.log("🚀 ~ GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirectUri:", GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirectUri)
 
 /*
 Possibly needed for watch:

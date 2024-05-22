@@ -15,6 +15,7 @@ function getToken(userMembership: UserMembership, code: string) {
       }
 
       if (tokens === null || tokens === undefined) {
+        console.log('No tokens:', tokens);
         return resolve({ error: 'No tokens' });
       }
 
@@ -39,7 +40,7 @@ function getToken(userMembership: UserMembership, code: string) {
         },
       });
 
-      resolve({ refreshToken });
+      resolve({});
 
       // Change the slashes to something that don't breakes the URL
     });
@@ -52,11 +53,10 @@ export default async function GoogleOauthRedirectPage({
   searchParams: { code: string };
 }) {
   const { code } = searchParams;
-  const userId = await getUserId();
   const userMembership = await getUserMembership();
 
-  console.log('Getting toke with code:', code);
-  const { error, refreshToken } = await getToken(userMembership, code);
+  console.log('Getting token with code:', code, ' for user:', userMembership.membershipId);
+  const { error } = await getToken(userMembership, code);
 
   if (error) {
     console.log('🚀 ~ error on redirect:', error);
