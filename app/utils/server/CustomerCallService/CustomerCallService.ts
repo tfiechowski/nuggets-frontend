@@ -125,6 +125,12 @@ export class CustomerCallService {
           // Todo: refactor to builder pattern?
           additionalData = addCallProviderData(additionalData, event.location);
         }
+        console.log(
+          '🚀 upsert: eventId, membershipId, additionalData',
+          event.id,
+          userMembership.membershipId,
+          additionalData
+        );
 
         // TODO: update attendees too?
         // TODO: Fix types as well
