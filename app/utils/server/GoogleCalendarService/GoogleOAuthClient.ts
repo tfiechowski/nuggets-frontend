@@ -8,9 +8,9 @@ import { google } from 'googleapis';
 function getRedirectUri() {
   const redirectUri = encodeURI(NEXT_PUBLIC_DEFAULT_URL + '/api/google-calendar/oauth');
 
-  if (redirectUri.startsWith('https://') && !redirectUri.startsWith('https://www')) {
-    return redirectUri.replace('https://', 'https://www.');
-  }
+  // if (redirectUri.startsWith('https://') && !redirectUri.startsWith('https://www')) {
+  //   return redirectUri.replace('https://', 'https://www.');
+  // }
   return redirectUri;
 }
 
