@@ -5,11 +5,25 @@ import {
 } from '@/app/utils/config';
 import { google } from 'googleapis';
 
-const redirectUri = encodeURI(NEXT_PUBLIC_DEFAULT_URL + '/api/google-calendar/oauth');
+function getRedirectUri() {
+  const redirectUri = encodeURI(NEXT_PUBLIC_DEFAULT_URL + '/api/google-calendar/oauth');
+
+  if (redirectUri.startsWith('https://') && !redirectUri.startsWith('https://www')) {
+    return redirectUri.replace('https://', 'https://www.');
+  }
+  return redirectUri;
+}
+
+const redirectUri = getRedirectUri();
 
 export const GoogleOAuth2Client = () =>
   new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirectUri);
-console.log("🚀 ~ GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirectUri:", GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirectUri)
+console.log(
+  '🚀 ~ GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirectUri:',
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  redirectUri
+);
 
 /*
 Possibly needed for watch:
