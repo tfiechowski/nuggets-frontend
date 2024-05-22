@@ -92,9 +92,11 @@ export class GoogleCalendarService {
       `Refreshing ${nearExpirationIntegrations.length} calendar integrations for ${memberships.length} users`
     );
 
-    return Promise.all(
+    await Promise.all(
       memberships.map((membership) => GoogleCalendarService.refreshEventsWatch(membership, true))
     );
+
+    return true;
   }
 
   public static async refreshEventsWatch(userMembership: UserMembership, force: boolean) {
