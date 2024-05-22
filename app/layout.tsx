@@ -1,10 +1,9 @@
 import { GeistSans } from 'geist/font/sans';
-import './globals.css';
-import { Providers } from '@/app/providers';
 import Head from 'next/head';
+import './globals.css';
 
-import { Bitter } from 'next/font/google';
 import { NEXT_PUBLIC_DEFAULT_URL } from '@/app/utils/config';
+import { Bitter } from 'next/font/google';
 
 const bitter = Bitter({ subsets: ['latin'], variable: '--font-bitter' });
 
@@ -58,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <body className="bg-background text-foreground">
         <main className={`min-h-screen flex flex-col items-center ${bitter.variable}`}>
-          <Providers>{children}</Providers>
+          {children}
         </main>
       </body>
     </html>

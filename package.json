@@ -34,7 +34,6 @@
     "@supabase/supabase-js": "latest",
     "@tanstack/react-table": "^8.11.8",
     "@types/ical": "^0.8.3",
-    "@usebasejump/next": "^0.0.4",
     "autoprefixer": "10.4.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
