@@ -198,4 +198,6 @@ function addCallProviderData(data: any, location: string) {
       },
     };
   }
+
+  return data;
 }
