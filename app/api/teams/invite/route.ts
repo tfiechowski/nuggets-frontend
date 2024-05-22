@@ -22,6 +22,7 @@ const RequestBody = z.object({
 
 const validateNotTeamMemberAlready: IFunctionalRuleValidator = (email: string) => async () => {
   const teamMembers = await getTeamMembers();
+  console.log("~ teamMembers:", teamMembers)
 
   return teamMembers.find((teamMember) => teamMember.email === email)
     ? { error: 'User is already a team member' }
