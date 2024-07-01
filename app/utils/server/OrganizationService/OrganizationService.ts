@@ -7,6 +7,7 @@ export class OrganizationService {
     return prisma.organization.create({
       data: {
         name,
+        emailDomains: [],
         membership: {
           create: {
             userId,
@@ -105,5 +106,15 @@ export class OrganizationService {
         },
       },
     });
+  }
+
+  public async getEmailDomains(organizationId: string) {
+    const org = await prisma.organization.findUniqueOrThrow({
+      where: {
+        id: organizationId,
+      },
+    });
+
+    return org.emailDomains;
   }
 }

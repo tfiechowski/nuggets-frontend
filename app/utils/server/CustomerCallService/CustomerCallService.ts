@@ -1,5 +1,6 @@
 import { CallInvitationService } from '@/app/utils/server/CallInvitationService';
 import { parseLocation } from '@/app/utils/server/CallInvitationService/parseProvider';
+import { filterEvents } from '@/app/utils/server/CustomerCallService/utils';
 import { UserMembership } from '@/app/utils/server/getUserTeam';
 import { prisma } from '@/lib/db';
 import { CustomerCall } from '@prisma/client';
@@ -58,24 +59,14 @@ export class CustomerCallService {
   public static async processEventsSync(
     userMembership: UserMembership,
     events: Array<calendar_v3.Schema$Event>,
-    customerEmailDomain: string
+    customerEmailDomains: Array<string>
   ) {
-    // TODO: Improve efficiency here by creating a helper to apply skips per event
-    // inside a single filter function, not calling filter multiple times
-    const skipNoIds = (event: calendar_v3.Schema$Event) => Boolean(event.id);
-    const skipFullDayEvents = (event: calendar_v3.Schema$Event) => Boolean(event.start?.dateTime);
-    const skipNoAttendees = (event: calendar_v3.Schema$Event) => event.attendees?.length;
-    const skipInternalMeetings = (event: calendar_v3.Schema$Event) =>
-      event.attendees?.some((attendee) => !attendee.email?.endsWith(customerEmailDomain));
-
     const pickCancelled = (event: calendar_v3.Schema$Event) => event.status === 'cancelled';
 
-    const filteredEvents = events
-      .filter(skipNoIds)
-      .filter(skipNoAttendees)
-      .filter(skipFullDayEvents)
-      .filter(skipInternalMeetings);
-    console.log('Updating', filteredEvents.length, 'events for', userMembership.membershipId);
+    const filteredEvents = filterEvents(events, customerEmailDomains);
+    console.log(
+      `Syncing events (${events.length}) for user ${userMembership.membershipId}, skipping ${customerEmailDomains} emails`
+    );
 
     const cancelledEvents = events.filter(pickCancelled);
 

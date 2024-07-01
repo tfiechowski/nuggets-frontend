@@ -12,6 +12,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { calendar_v3, google } from 'googleapis';
 import dayjs from 'dayjs';
 import { GoogleEventsNotificationChannel } from '@prisma/client';
+import { OrganizationService } from '@/app/utils/server/OrganizationService';
 
 export class GoogleCalendarService {
   public static async isUserIntegrated(userMembership: UserMembership): Promise<boolean> {
@@ -243,7 +244,10 @@ export class GoogleCalendarService {
     return refreshToken;
   }
 
-  public static async runCalendarSync(userMembership: UserMembership) {
+  public static async runCalendarSync(
+    userMembership: UserMembership,
+    organizationService: OrganizationService
+  ) {
     const oAuthClient = await GoogleCalendarService.getOAuthClient(userMembership);
     const calendar = google.calendar('v3');
 
@@ -261,6 +265,8 @@ export class GoogleCalendarService {
         },
       })
     ).nextSyncToken;
+
+    const emailDomains = await organizationService.getEmailDomains(userMembership.organization.id);
 
     if (syncToken === null) {
       console.log('Performing full sync');
@@ -286,7 +292,7 @@ export class GoogleCalendarService {
         // console.log('Events:', JSON.stringify(response.data.items, null, 2));
 
         if (response.data.items !== undefined) {
-          CustomerCallService.processEventsSync(userMembership, response.data.items, '@gmail.com');
+          CustomerCallService.processEventsSync(userMembership, response.data.items, emailDomains);
         }
       } catch (error) {
         console.log('Error on sync:', error);

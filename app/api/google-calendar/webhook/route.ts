@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { GoogleCalendarService } from '@/app/utils/server/GoogleCalendarService';
 
 import { prisma } from '@/lib/db';
+import { OrganizationService } from '@/app/utils/server/OrganizationService';
 
 export async function POST(request: Request) {
   const headers: Headers = request.headers as unknown as Headers;
@@ -38,10 +39,13 @@ export async function POST(request: Request) {
   });
 
   // TODO: Dirty hack with casting the data, improve
-  GoogleCalendarService.runCalendarSync({
-    membershipId: notificationChannel.membershipId,
-    organization: { id: membership.organizationId },
-  } as any);
+  GoogleCalendarService.runCalendarSync(
+    {
+      membershipId: notificationChannel.membershipId,
+      organization: { id: membership.organizationId },
+    } as any,
+    new OrganizationService()
+  );
 
   // What happens here, is that Google only notifies that something changed
   // but doesn't tell exactly what. Use channelId to retrieve Google Calendar
