@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import heroImg from '@/app/public/images/nuggets-logo-transparent.png';
+import logoTransparentImage from '@/app/public/images/nuggets-logo-transparent.png';
 import Container from '@/components/landing/Container';
 import Footer from '@/components/landing/Footer';
 import NavbarInner from '@/components/landing/Navbar';
@@ -52,7 +52,7 @@ export default async function Index() {
         <div className="flex items-center justify-center w-full lg:w-1/2">
           <div className="">
             <Image
-              src={heroImg}
+              src={logoTransparentImage}
               height="300"
               alt="Hero Illustration"
               layout="intrinsic"
