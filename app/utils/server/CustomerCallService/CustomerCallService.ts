@@ -65,8 +65,8 @@ export class CustomerCallService {
           equals: userMembership.membershipId,
         },
         scheduledAt: {
-          lt: now
-        }
+          lt: now,
+        },
       },
       orderBy: {
         scheduledAt: 'desc',
