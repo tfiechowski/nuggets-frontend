@@ -12,6 +12,7 @@ export default function Footer() {
   const legal = [
     { title: 'Terms', link: '/legal/terms-of-service' },
     { title: 'Privacy', link: '/legal/privacy-policy' },
+    { title: 'Support', link: '/support' },
   ];
   return (
     <div className="relative">
