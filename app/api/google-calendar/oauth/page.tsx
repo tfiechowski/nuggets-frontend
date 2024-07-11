@@ -23,7 +23,10 @@ function getToken(userMembership: UserMembership, code: string) {
       const refreshToken = tokens.refresh_token;
 
       if (refreshToken === null || refreshToken === undefined) {
-        return resolve({ error: 'No refresh token' });
+        return resolve({
+          error:
+            'No refresh token. Try removing your integration with Nuggets in Google Account Security settings and try integrating from scratch again.',
+        });
       }
 
       console.log('🚀 ~ GoogleOAuth2Client ~ refreshToken:', refreshToken);
