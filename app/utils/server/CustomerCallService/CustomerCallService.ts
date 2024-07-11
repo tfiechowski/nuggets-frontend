@@ -18,7 +18,7 @@ export class CustomerCallService {
         },
       },
       orderBy: {
-        scheduledAt: 'desc',
+        scheduledAt: 'asc',
       },
     });
   }
@@ -51,6 +51,25 @@ export class CustomerCallService {
       },
       orderBy: {
         scheduledAt: 'asc',
+      },
+      take: 5,
+    });
+  }
+
+  public static async getPastCalls(userMembership: UserMembership) {
+    const now = new Date();
+
+    return prisma.customerCall.findMany({
+      where: {
+        organizerId: {
+          equals: userMembership.membershipId,
+        },
+        scheduledAt: {
+          lt: now
+        }
+      },
+      orderBy: {
+        scheduledAt: 'desc',
       },
       take: 5,
     });
