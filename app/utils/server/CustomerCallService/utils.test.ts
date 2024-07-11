@@ -182,7 +182,6 @@ test('should filter daily event', () => {
   expect(filteredEvents.length).toEqual(0);
 });
 
-
 test('should filter default ignored domains', () => {
   const events = [
     {
@@ -204,7 +203,10 @@ test('should filter default ignored domains', () => {
       iCalUID: '4nnu83ebn18dg65g9i1e4h5k89_R20240522T081500@google.com',
       sequence: 0,
       attendees: [
-        { email: 'codility.com_hklcj2trhjp3k6qgguh3nqhks0@group.calendar.google.com', responseStatus: 'accepted' },
+        {
+          email: 'codility.com_hklcj2trhjp3k6qgguh3nqhks0@group.calendar.google.com',
+          responseStatus: 'accepted',
+        },
         { email: 'krzysztof.ebert@codility.com', responseStatus: 'accepted' },
         {
           email: 'maciej.gol@codility.com',
