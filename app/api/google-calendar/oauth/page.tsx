@@ -9,7 +9,7 @@ import { UserMembership, getUserMembership } from '@/app/utils/server/getUserTea
 function getToken(userMembership: UserMembership, code: string) {
   return new Promise<{ error?: any; refreshToken?: string }>((resolve, reject) => {
     GoogleOAuth2Client().getToken(code, async (err, tokens, res) => {
-      console.log("getToken response", res);
+      console.log('getToken response', res);
       if (err) {
         console.log('server 39 | error', err);
         return resolve({ error: `Issue with Login: ${err.message}` });
