@@ -4,6 +4,7 @@ import { filterEvents } from '@/app/utils/server/CustomerCallService/utils';
 import { UserMembership } from '@/app/utils/server/getUserTeam';
 import { prisma } from '@/lib/db';
 import { CustomerCall } from '@prisma/client';
+import Bottleneck from 'bottleneck';
 import { calendar_v3 } from 'googleapis';
 
 export class CustomerCallService {
@@ -115,59 +116,87 @@ export class CustomerCallService {
       },
     });
 
+    const existingEventsNewData = events.filter((event) =>
+      existingEvents.some(({ id, eventId }) => eventId === event.id)
+    );
+
     const newEvents = filteredEvents.filter(
       (event) => !existingEvents.find((e) => e.eventId === event.id)
     );
 
     console.log('Existing:', existingEvents.length, 'New:', newEvents.length);
 
-    // Do upsert for all events
-    await Promise.all(
-      filteredEvents.map(async (event) => {
-        if (typeof event.id !== 'string') {
+    // Bulk create new events
+    await prisma.customerCall.createMany({
+      data: newEvents.map((newEvent) => {
+        if (typeof newEvent.id !== 'string') {
           console.log("Event doesn't have an ID");
           return {};
         }
 
         let additionalData: Partial<CustomerCall> = { data: {} };
 
-        if (event.location) {
+        if (newEvent.location) {
           // Todo: refactor to builder pattern?
-          additionalData = addCallProviderData(additionalData, event.location);
+          additionalData = addCallProviderData(additionalData, newEvent.location);
+        }
+
+        return {
+          eventId: newEvent.id,
+          title: newEvent.summary || 'Summary',
+          createdAt: newEvent.created || 'Unknown',
+          timezone: newEvent.start?.timeZone as any,
+          scheduledAt: newEvent.start?.dateTime as any,
+          scheduledEndAt: newEvent.end?.dateTime as any,
+          organizerId: userMembership.membershipId,
+          ...additionalData,
+        } as any;
+      }),
+    });
+
+    // Update for existing events
+    const limiter = new Bottleneck({
+      maxConcurrent: 15,
+    });
+
+    await Promise.all(
+      existingEventsNewData.map((existingEventNewData: calendar_v3.Schema$Event) => {
+        if (typeof existingEventNewData.id !== 'string') {
+          console.log("Event doesn't have an ID");
+          return {};
+        }
+
+        let additionalData: Partial<CustomerCall> = { data: {} };
+
+        if (existingEventNewData.location) {
+          // Todo: refactor to builder pattern?
+          additionalData = addCallProviderData(additionalData, existingEventNewData.location);
         }
         console.log(
           '🚀 upsert: eventId, membershipId, additionalData',
-          event.id,
+          existingEventNewData.id,
           userMembership.membershipId,
           additionalData
         );
 
         // TODO: update attendees too?
         // TODO: Fix types as well
-        return prisma.customerCall.upsert({
-          where: {
-            eventId: event.id,
-            organizerId: userMembership.membershipId,
-          },
-          create: {
-            eventId: event.id,
-            title: event.summary || 'Summary',
-            createdAt: event.created || 'Unknown',
-            timezone: event.start?.timeZone as any,
-            scheduledAt: event.start?.dateTime as any,
-            scheduledEndAt: event.end?.dateTime as any,
-            organizerId: userMembership.membershipId,
-            ...additionalData,
-          } as any,
-          update: {
-            title: event.summary || 'Summary',
-            createdAt: event.created || 'Unknown',
-            timezone: event.start?.timeZone as any,
-            scheduledAt: event.start?.dateTime as any,
-            scheduledEndAt: event.end?.dateTime as any,
-            ...additionalData,
-          } as any,
-        });
+        return limiter.schedule(() =>
+          prisma.customerCall.update({
+            where: {
+              eventId: existingEventNewData.id as string,
+              organizerId: userMembership.membershipId,
+            },
+            data: {
+              title: existingEventNewData.summary || 'Summary',
+              createdAt: existingEventNewData.created || 'Unknown',
+              timezone: existingEventNewData.start?.timeZone as any,
+              scheduledAt: existingEventNewData.start?.dateTime as any,
+              scheduledEndAt: existingEventNewData.end?.dateTime as any,
+              ...additionalData,
+            } as any,
+          })
+        );
       })
     );
 
@@ -188,7 +217,9 @@ export class CustomerCallService {
     // lot of underlying DB calls and logic.
     await Promise.all(
       newCustomerCalls.map((customerCall) =>
-        CallInvitationService.setupCallResources(customerCall.id, userMembership.organization.id)
+        limiter.schedule(() =>
+          CallInvitationService.setupCallResources(customerCall.id, userMembership.organization.id)
+        )
       )
     );
 

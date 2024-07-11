@@ -2,11 +2,11 @@
   {
     "kind": "calendar#event",
     "etag": "\"3431609486192000\"",
-    "id": "19j7kigm5v3gs0ivltcpe6nmtk",
+    "id": "19j7kigm5v3gs0ivltcpe6nxxx",
     "status": "confirmed",
     "htmlLink": "https://www.google.com/calendar/event?eid=MTlqN2tpZ201djNnczBpdmx0Y3BlNm5tdGsgdG9tYXN6LmZpZWNob3dza2lAbQ",
-    "created": "2024-05-15T20:25:43.000Z",
-    "updated": "2024-05-15T20:25:43.096Z",
+    "created": "2024-06-15T20:25:43.000Z",
+    "updated": "2024-06-15T20:25:43.096Z",
     "summary": "New event",
     "creator": {
       "email": "tomasz.fiechowski@gmail.com",
@@ -24,7 +24,95 @@
       "dateTime": "2024-05-15T23:15:00+02:00",
       "timeZone": "Europe/Warsaw"
     },
-    "iCalUID": "19j7kigm5v3gs0ivltcpe6nmtk@google.com",
+    "iCalUID": "19j7kigm5v3gs0ivltcpe6nxxx@google.com",
+    "sequence": 0,
+    "attendees": [
+      {
+        "email": "tomasz@rota.works",
+        "responseStatus": "needsAction"
+      },
+      {
+        "email": "tomasz.fiechowski@gmail.com",
+        "organizer": true,
+        "self": true,
+        "responseStatus": "accepted"
+      }
+    ],
+    "reminders": {
+      "useDefault": true
+    },
+    "eventType": "default"
+  },
+  {
+    "kind": "calendar#event",
+    "etag": "\"3431609486192000\"",
+    "id": "1",
+    "status": "confirmed",
+    "htmlLink": "https://www.google.com/calendar/event?eid=MTlqN2tpZ201djNnczBpdmx0Y3BlNm5tdGsgdG9tYXN6LmZpZWNob3dza2lAbQ",
+    "created": "2024-07-15T20:25:43.000Z",
+    "updated": "2024-07-15T20:25:43.096Z",
+    "summary": "Existing event #1",
+    "creator": {
+      "email": "tomasz.fiechowski@gmail.com",
+      "self": true
+    },
+    "organizer": {
+      "email": "tomasz.fiechowski@gmail.com",
+      "self": true
+    },
+    "start": {
+      "dateTime": "2024-05-15T22:45:00+02:00",
+      "timeZone": "Europe/Warsaw"
+    },
+    "end": {
+      "dateTime": "2024-05-15T23:15:00+02:00",
+      "timeZone": "Europe/Warsaw"
+    },
+    "iCalUID": "1@google.com",
+    "sequence": 0,
+    "attendees": [
+      {
+        "email": "tomasz@rota.works",
+        "responseStatus": "needsAction"
+      },
+      {
+        "email": "tomasz.fiechowski@gmail.com",
+        "organizer": true,
+        "self": true,
+        "responseStatus": "accepted"
+      }
+    ],
+    "reminders": {
+      "useDefault": true
+    },
+    "eventType": "default"
+  },
+  {
+    "kind": "calendar#event",
+    "etag": "\"3431609486192000\"",
+    "id": "2",
+    "status": "confirmed",
+    "htmlLink": "https://www.google.com/calendar/event?eid=MTlqN2tpZ201djNnczBpdmx0Y3BlNm5tdGsgdG9tYXN6LmZpZWNob3dza2lAbQ",
+    "created": "2024-07-15T20:25:43.000Z",
+    "updated": "2024-07-15T20:25:43.096Z",
+    "summary": "Existing event #2",
+    "creator": {
+      "email": "tomasz.fiechowski@gmail.com",
+      "self": true
+    },
+    "organizer": {
+      "email": "tomasz.fiechowski@gmail.com",
+      "self": true
+    },
+    "start": {
+      "dateTime": "2024-05-15T22:45:00+02:00",
+      "timeZone": "Europe/Warsaw"
+    },
+    "end": {
+      "dateTime": "2024-05-15T23:15:00+02:00",
+      "timeZone": "Europe/Warsaw"
+    },
+    "iCalUID": "1@google.com",
     "sequence": 0,
     "attendees": [
       {
