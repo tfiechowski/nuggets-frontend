@@ -18,7 +18,7 @@ const benefitOne = {
     },
     {
       title: 'Follow up-scheduler',
-      desc: 'Easily schedule a follow-up meting post every call with an integrated time-zone manager',
+      desc: 'Easily schedule a follow-up meting post every call with an integrated time-zone manager. Integrate with Google Calendar™',
       // icon: <CursorClickIcon />
     },
     {
