@@ -32,6 +32,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="twitter:description" content={metadata.description} />
         <meta name="twitter:image" content={metadata.cardImage} />
 
+        <meta name="google-site-verification" content="9dxn9vhSet4Sqe8MM1uNyx26Bfb6Gi5tMznq7UuMRcA" />
+
         <link rel="icon" href="/favicon.ico" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
