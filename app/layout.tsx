@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ></link>
       </Head>
 
-      <body className="bg-background text-foreground">
+      <body className="bg-background text-foreground cache-bust">
         <main className={`min-h-screen flex flex-col items-center ${bitter.variable}`}>
           {children}
         </main>
