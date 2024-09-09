@@ -5,6 +5,8 @@ import Footer from '@/components/landing/Footer';
 import Hero from '@/components/landing/Hero';
 import Navbar from '@/components/landing/Navbar';
 import NavbarInner from '@/components/landing/Navbar';
+import CookieConsent from '@/components/legal/CookieConsent';
+
 
 const benefitOne = {
   title: 'How can Nuggets help you?',
@@ -43,6 +45,8 @@ export default async function Index() {
           <BetaSignup dark />
         </Container>
       </div>
+
+      <CookieConsent />
 
       <Footer />
     </>
