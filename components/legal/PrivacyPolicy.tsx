@@ -1,10 +1,10 @@
 export function PrivacyPolicy() {
   return (
-    <div className="container">
-      <h2>Privacy Policy</h2>
+    <div className="container legal">
+      <h2 className="text-2xl">Privacy Policy</h2>
       <p>
         {' '}
-        TFITC built the Nuggets app as a Commercial app. This SERVICE is provided by TFITC and is
+        TFITC (Tomasz Fiechowski ITC, 80-346 Jakuba Wejhera 8, Gdańsk, NIP: 5842760783) built the Nuggets app as a Commercial app. This SERVICE is provided by TFITC and is
         intended for use as is.
       </p>
       <p>

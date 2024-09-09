@@ -59,7 +59,7 @@ export default function CookieConsent({ variant = "default", demo = false, onAcc
                                 <br />
                                 <span className="text-xs">By clicking "<span className="font-medium opacity-80">Accept</span>", you agree to our use of cookies.</span>
                                 <br />
-                                <a href="/legal/cookies-policy" className="text-xs underline">Learn more.</a>
+                                <a href="/legal/cookie-policy" className="text-xs underline">Learn more.</a>
                             </p>
                         </div>
                         <div className="flex gap-2 p-4 py-5 border-t border-border dark:bg-background/20">

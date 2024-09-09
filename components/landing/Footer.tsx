@@ -12,6 +12,7 @@ export default function Footer() {
   const legal = [
     { title: 'Terms', link: '/legal/terms-of-service' },
     { title: 'Privacy Policy', link: '/legal/privacy-policy' },
+    { title: 'Cookies Policy', link: '/legal/cookie-policy' },
     { title: 'Support', link: '/support' },
   ];
   return (
