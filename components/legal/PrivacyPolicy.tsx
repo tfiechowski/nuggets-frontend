@@ -4,8 +4,9 @@ export function PrivacyPolicy() {
       <h2 className="text-2xl">Privacy Policy</h2>
       <p>
         {' '}
-        TFITC (Tomasz Fiechowski ITC, 80-346 Jakuba Wejhera 8, Gdańsk, NIP: 5842760783) built the Nuggets app as a Commercial app. This SERVICE is provided by TFITC and is
-        intended for use as is.
+        TFITC (Tomasz Fiechowski ITC, 80-346 Jakuba Wejhera 8, Gdańsk, NIP: 5842760783) ("we," "us,"
+        or "our") built the Nuggets app as a Commercial app. This SERVICE is provided by TFITC and
+        is intended for use as is.
       </p>
       <p>
         This page is used to inform visitors regarding our policies with the collection, use, and
@@ -18,8 +19,11 @@ export function PrivacyPolicy() {
         described in this Privacy Policy.
       </p>
       <p>
-        The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions,
-        which is accessible at Nuggets unless otherwise defined in this Privacy Policy.
+        The terms used in this Privacy Policy have the same meanings as in our{' '}
+        <a href="/legal/terms-of-service" className="text-blue-600 visited:text-purple-600">
+          Terms and Conditions
+        </a>
+        , which is accessible at Nuggets unless otherwise defined in this Privacy Policy.
       </p>
       <p>
         <strong>Information Collection and Use</strong>
