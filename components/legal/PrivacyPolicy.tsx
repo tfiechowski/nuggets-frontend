@@ -81,6 +81,22 @@ export function PrivacyPolicy() {
         However, they are obligated not to disclose or use the information for any other purpose.
       </p>
       <p>
+        <strong>Google Calendar Integration</strong>
+      </p>
+      <p>
+        Our app accesses the following Google user data:
+        <ul>
+          <li>Calendar events: Event titles, descriptions, times, and attendee information.</li>
+          <li>User profile: Email address for identification and synchronization purposes.</li>
+        </ul>
+      </p>
+      <p>
+        We retain Google Calendar data only as long as customer account is active for history
+        tracking purposes (meeting name, time, participants emails). Users can request deletion of
+        their data by contacting us at support@getnuggets.io. Upon deletion, all synchronized data
+        will be removed from our systems within 14 days.
+      </p>
+      <p>
         <strong>Security</strong>
       </p>
       <p>
